@@ -1,0 +1,217 @@
+﻿@{
+    Layout = "~/Views/Shared/_Index.cshtml";
+ }
+ @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostingEnvironment
+@section header{
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/zTree/v3/css/metroStyle/metroStyle.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/zTree/v3/js/ztree.min.js"))
+
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/jquery.layout/1.4.4/jquery.layout-latest.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/jquery.layout/1.4.4/jquery.layout-latest.min.js"))
+
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/bootstrap.treetable/1.0/bootstrap-treetable.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/bootstrap.treetable/1.0/bootstrap-treetable.min.js"))
+}
+
+
+    <div class="container-div  ui-layout-center">
+    <div class="row">
+        <div id="searchDiv" class="col-sm-12 search-collapse">
+                <input type="hidden" id="productId" col="ProductId">
+                <input type="hidden" id="cateId" col="CateId">
+              
+
+                <input type="hidden" id="taskId" col="TaskId">
+                <input type="hidden" id="envId" col="EnvId">
+            <input type="hidden" id="isEnable" col="IsEnable" value="true">
+            <input type="hidden" id="searchSource" col="SearchSource" value="QueryForTaskItems">
+            <div class="select-list">
+                <ul>
+                    <li>
+                        @(GlobalContext.SystemConfig.CaseName)编码：<input id="code" col="Code" type="text" />
+                    </li>
+                    <li>
+                        @(GlobalContext.SystemConfig.CaseName)名称：<input id="name" col="Name" type="text" />
+                    </li>
+                   @* <li>
+                        模板编码：<input id="projectGuid" col="ProjectGuid" type="text" />
+                    </li>*@
+                    <li>
+                        模板名称：<input id="projectName" col="ProjectName" type="text" />
+                    </li>
+                    <li>
+                        <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        @*<div class="btn-group-sm hidden-xs" id="toolbar">
+            <a id="btnAdd" class="btn btn-success" onclick="showSaveForm(true)"><i class="fa fa-plus"></i> 新增</a>
+            <a id="btnEdit" class="btn btn-primary disabled" onclick="showSaveForm(false)"><i class="fa fa-edit"></i> 修改</a>
+            <a id="btnDelete" class="btn btn-danger disabled" onclick="deleteForm()"><i class="fa fa-remove"></i> 删除</a>
+        </div>*@
+        <div class="col-sm-12 select-table table-striped">
+            <table id="gridTable" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+        var taskId=ys.request('taskId');
+        var envId = ys.request('envId');
+
+        $("#taskId").val(taskId);
+        $("#envId").val(envId);
+
+        $(function () {
+            initProjectTreeGrid();
+            initGrid();
+            $('body').layout({ west__size: 185 });
+        });
+
+        //$('#departmentId').ysComboBoxTree({ url: '@Url.Content("~/OrganizationManage/Department/GetDepartmentTreeListJson")' });
+
+        function initProjectTreeGrid() {
+            $('#productTree').ysTree({
+                url: '@Url.Content("~/ProjectManager/PublishedProject/GetTree")',
+                async: true,
+                expandLevel: 2,
+                maxHeight: "700px",
+                callback: {
+                    onClick: function (event, treeId, treeNode) {
+                        $("#productId").val("");
+                        $("#cateId").val("");
+                        $("#projectGuid").val("");
+
+                        //查找根结点
+                        var rootNode = treeNode;
+                        var parentNode = treeNode;
+                        while (parentNode != null) {
+                            parentNode = parentNode.getParentNode();
+                            if (parentNode != null) {
+                                rootNode = parentNode;
+                            }
+                        }
+
+                        //根节点为产品
+                        $("#productId").val(rootNode.id);
+
+                        //当前选中的是功能模块节点
+                        if (treeNode.nodeType=="module")
+                        {
+                            $("#cateId").val(treeNode.id);
+                        }
+
+
+                        searchGrid();
+                    }
+                }
+            });
+        }
+
+    function initGrid() {
+        var queryUrl = '@Url.Content("~/TestCaseManager/TestCase/GetPageListJson")';
+        $('#gridTable').ysTable({
+            url: queryUrl,
+            columns: [
+                { checkbox: true, visible: true },
+                { field: 'Id', title: 'Id', visible: false },
+
+                //{ field: 'TenantId', title: 'TenantId' },
+                //{ field: 'ProductId', title: 'ProductId' },
+
+
+
+                { field: 'Code', title: '@(GlobalContext.SystemConfig.CaseName)编码' },
+                { field: 'Name', title: '@(GlobalContext.SystemConfig.CaseName)名称' },
+                {
+                    field: 'Priority', title: '优先级', width: '40px', formatter: function (value, row, index) {
+                        if (row.Priority == "@CasePriorityEnumType.A.ParseToInt()") {
+                            return '' + "@CasePriorityEnumType.A.GetDescription()" + '';
+                        } else if (row.Priority == "@CasePriorityEnumType.B.ParseToInt()") {
+                            return '' + "@CasePriorityEnumType.B.GetDescription()" + '';
+                        }
+                        else if (row.Priority == "@CasePriorityEnumType.C.ParseToInt()") {
+                            return '' + "@CasePriorityEnumType.C.GetDescription()" + '';
+                        }
+                        else if (row.Priority == "@CasePriorityEnumType.D.ParseToInt()") {
+                            return '' + "@CasePriorityEnumType.D.GetDescription()" + '';
+                        }
+                        else if (row.Priority == "@CasePriorityEnumType.E.ParseToInt()") {
+                            return '' + "@CasePriorityEnumType.E.GetDescription()" + '';
+                        }
+                    }
+                },
+                { field: 'EnvDisplayName', title: '执行环境' },
+                {
+                    field: 'SupportParallel', title: '可并行', width: '40px', formatter: function (value, row, index) {
+                        if (row.SupportParallel == "@IsEnum.Yes.ParseToInt()") {
+                            return '' + "@IsEnum.Yes.GetDescription()" + '';
+                        } else {
+                            return '' + "@IsEnum.No.GetDescription()" + '';
+                        }
+                    }
+                },
+              
+                { field: 'ProjectGuid', title: '模板编码', width: '120px', visible: false },
+                { field: 'ProjectName', title: '模板名称' },
+                { field: 'SpecialVersion', title: '模板版本', width: '80px' },
+
+                //{ field: 'BaseCreateTime', title: '创建时间', width: '140px', visible: false },
+                { field: 'BaseModifyTime', title: '修改时间', width: '140px' },
+                {
+                    field: 'BaseModifyTime', title: '修改时间', width: '135px', formatter: function (value, row, index) {
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+                {
+                    field: 'IsEnable', title: '状态', width: '40px', formatter: function (value, row, index) {
+                        if (row.IsEnable == "@StatusEnum.Yes.ParseToInt()") {
+                            return '<span class="badge badge-primary">' + "@StatusEnum.Yes.GetDescription()" + '</span>';
+                        } else {
+                            return '<span class="badge badge-warning">' + "@StatusEnum.No.GetDescription()" + '</span>';
+                        }
+                    }
+                }
+            ],
+            queryParams: function (params) {
+                var pagination = $('#gridTable').ysTable('getPagination', params);
+                var queryString = $('#searchDiv').getWebControls(pagination);
+                return queryString;
+            }
+        });
+    }
+
+    function searchGrid() {
+        $('#gridTable').ysTable('search');
+        resetToolbarStatus();
+    }
+
+    function saveForm(index, currentWindow, layero) {
+            var selectedRow = $('#gridTable').bootstrapTable('getSelections');
+            if (selectedRow.length == 0) {
+                return;
+            }
+
+            console.log(selectedRow);
+
+            var saveUrl = '@Url.Content("~/TestTaskManager/TestTaskItem/SaveCaseListForm")' + '?taskId=' + taskId;
+            
+            var postData = selectedRow;
+            ys.ajax({
+                url: saveUrl,
+                type: 'post',
+                data: { caseList: postData },
+                success: function (obj) {
+                    if (obj.Status) {
+                        ys.msgSuccess(obj.Message);
+                        currentWindow.searchGrid();
+                        parent.layer.close(index);
+                    }
+                    else {
+                        ys.msgError(obj.Message);
+                    }
+                }
+            });
+        }
+</script>

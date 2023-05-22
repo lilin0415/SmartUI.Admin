@@ -1,0 +1,100 @@
+﻿@{
+    Layout = "~/Views/Shared/_FormWhite.cshtml";
+}
+
+
+
+    <div class="wrapper animated fadeInRight">
+        <form id="form" class="form-horizontal m">
+
+            <fieldset>
+                <legend>基本信息</legend>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label ">公司名称<font class="red"> *</font></label>
+                    <div class="col-sm-9">
+                        <input id="corporateName" col="CorporateName" type="text" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label ">简称</label>
+                    <div class="col-sm-9">
+                        <input id="corporateShortName" col="CorporateShortName" type="text" class="form-control" />
+                    </div>
+                </div>
+            </fieldset>
+
+
+            <div class="form-group">
+                <div class="col-sm-5"></div>
+                <div class="col-sm-2">
+                    <button type="button" onclick="saveForm();" class="btn btn-w-m btn-primary" style="border-color: #1E9FFF;background-color: #1E9FFF;color: #fff;">
+                        确认
+                    </button>
+                </div>
+                <div class="col-sm-5"></div>
+
+            </div>
+           
+        </form>
+    </div>
+
+
+
+
+<script type="text/javascript">
+    var id = 1;
+    $(function () {
+        getForm();
+
+        $('#form').validate({
+            rules: {
+
+                corporateName: { required: true }
+             
+                
+            }
+        });
+    });
+
+    function getForm() {
+        id=1;
+        if (id > 0) {
+            ys.ajax({
+                url: '@Url.Content("~/SystemManage/Config/GetIndexFormJson")' + '?id=' + id,
+                type: 'get',
+                success: function (obj) {
+                    if (obj.Status) {
+                        $('#form').setWebControls(obj.Result);
+                    }
+                }
+            });
+        }
+        else {
+            var defaultData = {};
+            $('#form').setWebControls(defaultData);
+        }
+    }
+
+    function saveForm(index) {
+        if ($('#form').validate().form()) {
+            var postData = $('#form').getWebControls({ Id: id });
+            ys.ajax({
+                url: '@Url.Content("~/SystemManage/Config/SaveBasicFormJson")',
+                type: 'post',
+                data: postData,
+                success: function (obj) {
+                    if (obj.Status) {
+                        ys.msgSuccess(obj.Message);
+                        window.location.reload();
+                        //parent.searchGrid();
+                        //parent.layer.close(index);
+                    }
+                    else {
+                        ys.msgError(obj.Message);
+                    }
+                }
+            });
+        }
+    }
+</script>
+

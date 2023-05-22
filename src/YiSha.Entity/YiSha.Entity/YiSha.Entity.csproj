@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="TenantManage\**" />
+    <EmbeddedResource Remove="TenantManage\**" />
+    <None Remove="TenantManage\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ProductCategoryManager\" />
+    <Folder Include="ProductCategoryManager\g\" />
+    <Folder Include="ToolManage\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\YiSha.Util\YiSha.IdGenerator\YiSha.IdGenerator.csproj" />
+    <ProjectReference Include="..\..\YiSha.Util\YiSha.Util\YiSha.Util.csproj" />
+    <ProjectReference Include="..\..\YiSha.Web\YiSha.Web.Code\YiSha.Web.Code.csproj" />
+  </ItemGroup>
+
+</Project>

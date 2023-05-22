@@ -1,0 +1,232 @@
+﻿@{
+    Layout = "~/Views/Shared/_Index.cshtml";
+ }
+<div class="container-div">
+    <div class="row">
+        <div id="searchDiv" class="col-sm-12 search-collapse collapse">
+            <div class="select-list">
+                <ul>
+                    <li>
+                        TenantId：<input id="tenantId" col="TenantId" type="text" />
+                    </li>
+                    <li>
+                        <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="btn-group-sm hidden-xs" id="toolbar">
+            <a id="btnAdd" class="btn btn-success" onclick="openSelectCasePage()"><i class="fa fa-plus"></i> 新增</a>
+            <a class="btn btn-primary" onclick="updateSortNum()"><i class="fa fa-edit"></i> 修改顺序</a>
+            <a id="btnDelete" class="btn btn-danger disabled" onclick="deleteForm()"><i class="fa fa-remove"></i> 删除</a>
+            @*<a id="btnDelete" class="btn btn-danger disabled" onclick="deleteForm()"><i class="fa fa-remove"></i> 修改顺序</a>*@
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="gridTable" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var taskId = ys.request('taskId');
+    var envId = ys.request('envId');
+
+    $(function () {
+        initGrid();
+    });
+
+    function initGrid() {
+        if (ys.isNullOrEmpty(taskId)) {
+            ys.msgError("测试任务参数不能为空");
+            return;
+        }
+
+        var queryUrl = '@Url.Content("~/TestTaskManager/TestTaskItem/GetPageListJson")' + '?taskId=' + taskId;
+        $('#gridTable').ysTable({
+            url: queryUrl,
+            columns: [
+                { checkbox: true, visible: true },
+                //{ field: 'TaskItemId', title: 'TaskItemId', visible: false },
+                //{ field: 'TenantId', title: 'TenantId' },
+                { field: 'CaseId', title: '@(GlobalContext.SystemConfig.CaseName)ID', width: '50px', visible: false },
+                { field: 'Code', title: '@(GlobalContext.SystemConfig.CaseName)编码' },
+                { field: 'Name', title: '@(GlobalContext.SystemConfig.CaseName)名称' },
+                {
+                    field: 'Priority', title: '优先级', width: '40px', formatter: function (value, row, index) {
+                        if (row.Priority == "@CasePriorityEnumType.A.ParseToInt()") {
+                            return '' + "@CasePriorityEnumType.A.GetDescription()" + '';
+                        } else if (row.Priority == "@CasePriorityEnumType.B.ParseToInt()") {
+                            return '' + "@CasePriorityEnumType.B.GetDescription()" + '';
+                        }
+                        else if (row.Priority == "@CasePriorityEnumType.C.ParseToInt()") {
+                            return '' + "@CasePriorityEnumType.C.GetDescription()" + '';
+                        }
+                        else if (row.Priority == "@CasePriorityEnumType.D.ParseToInt()") {
+                            return '' + "@CasePriorityEnumType.D.GetDescription()" + '';
+                        }
+                        else if (row.Priority == "@CasePriorityEnumType.E.ParseToInt()") {
+                            return '' + "@CasePriorityEnumType.E.GetDescription()" + '';
+                        }
+                    }
+                },
+                {
+                    field: 'SortNum', title: '执行顺序', width: '40px', formatter: function (value, row, index) {
+                        return '<input type="hidden"  name="caseItem[TaskItemId][]" value="' + row.TaskItemId + '" class="caseId"/>'
+                            + '<input type="text"  name="caseItem[SortNum][]" value="' + value + '" class="caseSortNum"/>';
+
+                    }
+                },
+
+                
+                { field: 'EnvDisplayName', title: '执行环境', width: '100px' },
+                {
+                    field: 'SupportParallel', title: '可并行', width: '40px', formatter: function (value, row, index) {
+                        if (row.SupportParallel == "@IsEnum.Yes.ParseToInt()") {
+                            return '' + "@IsEnum.Yes.GetDescription()" + '';
+                        } else {
+                            return '' + "@IsEnum.No.GetDescription()" + '';
+                        }
+                    }
+                },
+                { field: 'ProjectName', title: '模板名称' },
+                { field: 'SpecialVersion', title: '模板版本号',width:'100px' },
+            
+                {
+                    field: 'BaseCreateTime', title: '创建时间', width: '135px', visible: false, formatter: function (value, row, index) {
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+                {
+                    field: 'BaseModifyTime', title: '修改时间', width: '135px', formatter: function (value, row, index) {
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+            ],
+            queryParams: function (params) {
+                var pagination = $('#gridTable').ysTable('getPagination', params);
+                var queryString = $('#searchDiv').getWebControls(pagination);
+                return queryString;
+            }
+        });
+    }
+
+    function searchGrid() {
+        $('#gridTable').ysTable('search');
+        resetToolbarStatus();
+    }
+
+    function showSaveForm(bAdd) {
+        if (ys.isNullOrEmpty(taskId)) {
+            ys.msgError("测试任务参数不能为空");
+            return;
+        }
+
+        var id = 0;
+        if (!bAdd) {
+            var selectedRow = $('#gridTable').bootstrapTable('getSelections');
+            if (!ys.checkRowEdit(selectedRow)) {
+                return;
+            }
+            else {
+                id = selectedRow[0].TaskItemId;
+                console.log('selectedItem task item :');
+                console.log(selectedRow[0]);
+            }
+        }
+        
+
+        ys.openDialog({
+            title: id > 0 ? '编辑' : '添加',
+            content: '@Url.Content("~/TestTaskManager/TestTaskItem/TestTaskItemForm")' + '?id=' + id + '&taskId=' + taskId + '&envId=' + envId,
+            width: '768px',
+            height: '550px',
+            callback: function (index, layero) {
+                var iframeWin = window[layero.find('iframe')[0]['name']];
+                iframeWin.saveForm(index);
+            }
+        });
+    }
+
+    function deleteForm() {
+        var selectedRow = $('#gridTable').bootstrapTable('getSelections');
+        if (ys.checkRowDelete(selectedRow)) {
+            ys.confirm('确认要删除选中的' + selectedRow.length + '条数据吗？', function () {
+                var ids = ys.getIds(selectedRow, 'TaskItemId');
+                ys.ajax({
+                    url: '@Url.Content("~/TestTaskManager/TestTaskItem/DeleteFormJson")' + '?ids=' + ids,
+                    type: 'post',
+                    success: function (obj) {
+                        if (obj.Status) {
+                            ys.msgSuccess(obj.Message);
+                            searchGrid();
+                        }
+                        else {
+                            ys.msgError(obj.Message);
+                        }
+                    }
+                });
+            });
+        }
+    }
+
+    //打开用例选择对话框
+    function openSelectCasePage() {
+     
+        ys.openDialog({
+            title: '选择@(GlobalContext.SystemConfig.CaseName)',
+            content: '@Url.Content("~/TestTaskManager/TestTaskItem/SelectTestCaseIndex")' + '?taskId=' + taskId + '&envId=' + envId,
+            moveOut: true,
+            maxWidth: true,
+           
+            callback: function (index, layero) {
+                var iframeWin = parent.window[layero.find('iframe')[0]['name']];
+                iframeWin.saveForm(index, window, layero);
+            }
+        });
+
+    }
+    //打开用例选择对话框
+    function updateSortNum() {
+        var customers = new Array();
+        var varItemIndex = 0;
+        $("#gridTable tr").each(function () {
+            var row = $(this);
+            var customer = {};
+            customer.Id = row.find("[name='caseItem[TaskItemId][]']").eq(0).val();
+            customer.SortNum = row.find("[name='caseItem[SortNum][]']").eq(0).val();
+            if (!ys.isNullOrEmpty(customer.Id)) {  //
+                customers.push(customer);
+                varItemIndex += 1;
+            }
+        });
+        console.log(customers);
+        ys.ajax({
+            url: '@Url.Content("~/TestTaskManager/TestTaskItem/UpdateSortNums")',
+            type: 'post',
+            data: { savingItems: customers },
+            success: function (obj) {
+                if (obj.Status) {
+                    ys.msgSuccess(obj.Message);
+                    searchGrid();
+                    //parent.layer.close(index);
+                }
+                else {
+                    ys.msgError(obj.Message);
+                }
+            }
+        });
+
+        //ys.openDialog({
+        //    title: '选择@(GlobalContext.SystemConfig.CaseName)',
+        //    content: '@Url.Content("~/TestTaskManager/TestTaskItem/SelectTestCaseIndex")' + '?taskId=' + taskId + '&envId=' + envId,
+        //    moveOut: true,
+        //    maxWidth: true,
+
+        //    callback: function (index, layero) {
+        //        var iframeWin = window[layero.find('iframe')[0]['name']];
+        //        iframeWin.saveForm(index);
+        //    }
+        //});
+
+    }
+</script>

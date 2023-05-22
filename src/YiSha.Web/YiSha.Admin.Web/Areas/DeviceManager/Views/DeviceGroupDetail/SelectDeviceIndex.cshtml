@@ -1,0 +1,143 @@
+﻿@using YiSha.Util;
+@{
+    Layout = "~/Views/Shared/_Index.cshtml";
+ }
+ @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostingEnvironment
+@section header{
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/zTree/v3/css/metroStyle/metroStyle.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/zTree/v3/js/ztree.min.js"))
+
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/jquery.layout/1.4.4/jquery.layout-latest.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/jquery.layout/1.4.4/jquery.layout-latest.min.js"))
+
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/bootstrap.treetable/1.0/bootstrap-treetable.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/bootstrap.treetable/1.0/bootstrap-treetable.min.js"))
+}
+
+
+    <div class="container-div  ui-layout-center">
+    <div class="row">
+        <div id="searchDiv" class="col-sm-12 search-collapse collapse">
+              
+          
+            <div class="select-list">
+                <ul>
+                    <li>
+                        编码：<input id="code" col="Code" type="text" />
+                    </li>
+                    <li>
+                        名称：<input id="name" col="Name" type="text" />
+                    </li>
+                
+                    <li>
+                        <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        @*<div class="btn-group-sm hidden-xs" id="toolbar">
+            <a id="btnAdd" class="btn btn-success" onclick="showSaveForm(true)"><i class="fa fa-plus"></i> 新增</a>
+            <a id="btnEdit" class="btn btn-primary disabled" onclick="showSaveForm(false)"><i class="fa fa-edit"></i> 修改</a>
+            <a id="btnDelete" class="btn btn-danger disabled" onclick="deleteForm()"><i class="fa fa-remove"></i> 删除</a>
+        </div>*@
+        <div class="col-sm-12 select-table table-striped">
+            <table id="gridTable" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+      var groupId = ys.request('groupId');
+
+        $(function () {
+        
+            initGrid();
+            
+        });
+
+    function initGrid() {
+        var queryUrl = '@Url.Content("~/DeviceManager/Device/GetPageListJson")';
+        $('#gridTable').ysTable({
+            url: queryUrl,
+            columns: [
+                { checkbox: true, visible: true },
+                { field: 'Id', title: 'Id', visible: false },
+                //{ field: 'TenantId', title: 'TenantId', visible: false },
+                //{ field: 'UId', title: '设备Id' },
+                //{ field: 'Guid', title: '设备Guid' },
+
+                //{ field: 'UserId', title: '客户端用户Id', visible: false },
+                { field: 'UserName', title: '客户端用户', width: '120px', sortable: true },
+                { field: 'AppVersion', title: '客户端版本' },
+
+                {
+                    field: 'LastActiveTime', title: '上次在线时间', sortable: true, width: '135px', formatter: function (value, row, index) {
+                        var formated = ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                        var friendly = ys.dateTimeFriendly(formated);
+                        var r = '<span style="padding:0px;" title="' + formated + '">' + friendly + '</span>';
+                        return r;
+
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+                {
+                    field: 'UserLoginTime', title: '登录时间', width: '135px', formatter: function (value, row, index) {
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+
+                { field: 'Name', title: '计算机名称' },
+                { field: 'IP', title: 'IP' },
+                { field: 'MAC', title: 'MAC地址' },
+              
+                {
+                    field: 'BaseCreateTime', title: '创建时间', width: '135px', formatter: function (value, row, index) {
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+            ],
+            queryParams: function (params) {
+                var pagination = $('#gridTable').ysTable('getPagination', params);
+                var queryString = $('#searchDiv').getWebControls(pagination);
+                return queryString;
+            }
+        });
+    }
+
+
+    function searchGrid() {
+        $('#gridTable').ysTable('search');
+        resetToolbarStatus();
+    }
+
+   
+    function saveForm(index,callback) {
+        var selectedRow = $('#gridTable').bootstrapTable('getSelections');
+        if (selectedRow.length == 0) {
+            return;
+        }
+    
+        var saveUrl = '@Url.Content("~/DeviceManager/DeviceGroupDetail/SaveDeviceListForm")' + '?groupId=' + groupId;
+
+        var postData = selectedRow;
+        ys.ajax({
+            url: saveUrl,
+            type: 'post',
+            data: { caseList: postData },
+            success: function (obj) {
+                if (obj.Status) {
+                    ys.msgSuccess(obj.Message);
+                    if (callback)
+                    {
+                        callback();
+                    }
+                    //parent.searchGrid();
+                    //parent.layer.close(index);
+                }
+                else {
+                    ys.msgError(obj.Message);
+                }
+            }
+        });
+    }
+</script>

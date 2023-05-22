@@ -1,0 +1,128 @@
+﻿@{
+    Layout = "~/Views/Shared/_FormWhite.cshtml";
+}
+
+
+
+    <div class="wrapper animated fadeInRight">
+        <form id="form" class="form-horizontal m">
+
+       
+            <fieldset>
+            <legend>
+                客户端本地密码  <small id="passwordHelpBlock" class="form-text text-muted" style="font-size:13px;">
+                    (当客户端设置自动登录时，用于加密登录密码)
+                </small>
+            </legend>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label ">私钥<font class="red"> *</font></label>
+                    <div class="col-sm-9">
+                        <textarea id="passwordPrivateKey" col="PasswordPrivateKey" type="text" class="form-control" style="height:200px;"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label ">公钥<font class="red"> *</font></label>
+                    <div class="col-sm-9">
+                        <textarea id="passwordPublicKey" col="PasswordPublicKey" type="text" class="form-control" style="height:100px;"></textarea>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+            <legend>
+                脚本中密码变量
+                <small id="passwordHelpBlock" class="form-text text-danger" style="font-size:13px;">
+                    (用于加密密码变量。如果已在命令中使用了密码变量，修改秘钥之后将无法解密旧命令中的密码变量)
+                    </small>
+                </legend>
+               
+                <div class="form-group">
+                    <label class="col-sm-2 control-label ">私钥<font class="red"> *</font></label>
+                    <div class="col-sm-9">
+                        <textarea id="varPasswordPrivateKey" col="VarPasswordPrivateKey" type="text" class="form-control" style="height:200px;"></textarea>
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label ">公钥<font class="red"> *</font></label>
+                    <div class="col-sm-9">
+                        <textarea id="varPasswordPublicKey" col="VarPasswordPublicKey" type="text" class="form-control" style="height:100px;"></textarea>
+                    </div>
+                </div>
+            </fieldset>
+
+            <div class="form-group">
+                <div class="col-sm-5"></div>
+                <div class="col-sm-2">
+                    <button type="button" onclick="saveForm();" class="btn btn-w-m btn-primary" style="border-color: #1E9FFF;background-color: #1E9FFF;color: #fff;">
+                        确认
+                    </button>
+                </div>
+                <div class="col-sm-5"></div>
+
+            </div>
+           
+        </form>
+    </div>
+
+
+
+
+<script type="text/javascript">
+    var id = 1;
+    $(function () {
+        getForm();
+
+        $('#form').validate({
+            rules: {
+
+                passwordPrivateKey: { required: true }
+                , passwordPublicKey: { required: true }
+                , varPasswordPrivateKey: { required: true }
+                , varPasswordPublicKey: { required: true }
+                
+            }
+        });
+    });
+
+    function getForm() {
+        id=1;
+        if (id > 0) {
+            ys.ajax({
+                url: '@Url.Content("~/SystemManage/Config/GetIndexFormJson")' + '?id=' + id,
+                type: 'get',
+                success: function (obj) {
+                    if (obj.Status) {
+                        $('#form').setWebControls(obj.Result);
+                    }
+                }
+            });
+        }
+        else {
+            var defaultData = {};
+            $('#form').setWebControls(defaultData);
+        }
+    }
+
+    function saveForm(index) {
+        if ($('#form').validate().form()) {
+            var postData = $('#form').getWebControls({ Id: id });
+            ys.ajax({
+                url: '@Url.Content("~/SystemManage/Config/SaveRsaFormJson")',
+                type: 'post',
+                data: postData,
+                success: function (obj) {
+                    if (obj.Status) {
+                        ys.msgSuccess(obj.Message);
+                        window.location.reload();
+                        //parent.searchGrid();
+                        //parent.layer.close(index);
+                    }
+                    else {
+                        ys.msgError(obj.Message);
+                    }
+                }
+            });
+        }
+    }
+</script>
+

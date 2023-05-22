@@ -1,0 +1,75 @@
+﻿-- MySqlBackup.NET 2.3.8.0
+-- Dump Time: 2023-05-21 16:06:49
+-- --------------------------------------
+-- Server version 5.7.36 MySQL Community Server (GPL)
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+
+-- 
+-- Definition of testcase
+-- 
+
+DROP TABLE IF EXISTS `testcase`;
+CREATE TABLE IF NOT EXISTS `testcase` (
+  `Id` bigint(20) NOT NULL,
+  `ProductId` bigint(20) NOT NULL COMMENT '应用类型',
+  `CateId` bigint(20) NOT NULL COMMENT '产品',
+  `ProjectGuid` char(37) NOT NULL COMMENT '项目',
+  `EnvId` bigint(20) NOT NULL,
+  `Code` varchar(120) NOT NULL COMMENT '编码',
+  `Name` varchar(250) NOT NULL COMMENT '名称',
+  `Summary` varchar(250) NOT NULL COMMENT '联系人',
+  `UsingVersion` tinyint(4) NOT NULL,
+  `SpecialVersion` varchar(30) NOT NULL,
+  `PrevStartTime` datetime(3) NOT NULL,
+  `PrevEndTime` datetime(3) NOT NULL,
+  `PrevFinishStatus` tinyint(4) NOT NULL,
+  `PrevReason` varchar(500) NOT NULL,
+  `StartTime` datetime(3) NOT NULL,
+  `EndTime` datetime(3) NOT NULL,
+  `ExecStatus` tinyint(4) NOT NULL,
+  `FinishStatus` tinyint(4) NOT NULL,
+  `VarJson` text NOT NULL,
+  `Reason` varchar(800) NOT NULL,
+  `Remark` text NOT NULL,
+  `IsEnable` tinyint(4) NOT NULL COMMENT '可用状态',
+  `BaseCreateTime` datetime(3) NOT NULL,
+  `BaseCreatorId` bigint(20) NOT NULL,
+  `BaseModifyTime` datetime(3) NOT NULL,
+  `BaseModifierId` bigint(20) NOT NULL,
+  `BaseVersion` int(11) NOT NULL,
+  `BaseIsDelete` tinyint(4) NOT NULL,
+  `Priority` tinyint(4) NOT NULL COMMENT '优先级',
+  `TypeId` bigint(20) NOT NULL,
+  PRIMARY KEY (`Id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+
+-- 
+-- Dumping data for table testcase
+-- 
+
+/*!40000 ALTER TABLE `testcase` DISABLE KEYS */;
+INSERT INTO `testcase`(`Id`,`ProductId`,`CateId`,`ProjectGuid`,`EnvId`,`Code`,`Name`,`Summary`,`UsingVersion`,`SpecialVersion`,`PrevStartTime`,`PrevEndTime`,`PrevFinishStatus`,`PrevReason`,`StartTime`,`EndTime`,`ExecStatus`,`FinishStatus`,`VarJson`,`Reason`,`Remark`,`IsEnable`,`BaseCreateTime`,`BaseCreatorId`,`BaseModifyTime`,`BaseModifierId`,`BaseVersion`,`BaseIsDelete`,`Priority`,`TypeId`) VALUES(496461412541927424,0,493792257187516416,'07b4ca4072454a6bacbfb7bc1a1c4db6',0,'ceshi001','测试用户登录用例','',0,'','2022-10-04 16:08:14.000','2022-10-04 16:08:14.000',0,'','2022-10-04 16:04:07.000','2022-10-04 16:04:07.000',0,0,'','','',0,'2022-10-01 23:20:25.000',16508640061130151,'2022-10-01 23:20:25.000',16508640061130151,0,0,0,0),(497452956195491840,493792257187516416,494623962114822144,'07b4ca4072454a6bacbfb7bc1a1c4db6',496427485466988544,'bbb','bbb名称','',1,'1.0.220928.2','1970-01-01 00:00:00.000','1970-01-01 00:00:00.000',0,'','1970-01-01 00:00:00.000','1970-01-01 00:00:00.000',0,0,'','','',0,'2022-10-04 17:00:27.000',16508640061130151,'2023-02-02 21:04:17.000',16508640061130151,0,0,0,0),(499689280575115264,493792257187516416,494623962114822144,'89132d9cb0104482ae653d17fe582fe1',496427485466988544,'test var','测试变量','',1,'1.0.0.0','1970-01-01 00:00:00.000','1970-01-01 00:00:00.000',0,'','1970-01-01 00:00:00.000','1970-01-01 00:00:00.000',0,0,' 1120000                                                                                                                {\"ProductId\":493792257187516416,\"CateId\":494623962114822144,\"ProjectGuid\":\"89132d9cb0104482ae653d17fe582fe1\",\"Name\":\"lll\",\"Remark\":null,\"Version\":\"1.0.0.0\",\"ReleaseNote\":null,\"ReleaseDate\":\"2022-10-08T22:08:54.1553859+08:00\",\"Password\":null,\"Documents\":[{\"DocumentType\":\"Project\",\"Id\":\"89132d9cb0104482ae653d17fe582fe1\",\"ParentId\":\"0\",\"Name\":\"lll\",\"Remark\":null,\"FullPath\":\"lll.sproj\",\"EnableVars\":true,\"Vars\":[{\"HtmlId\":\"var_1\",\"Name\":\"var_1\",\"Remark\":null,\"Prefix\":\"$\",\"Scope\":\"Project\",\"VarName\":\"var_1\",\"IsBuildIn\":false,\"IsReadOnly\":false,\"ValueType\":\"String\",\"Direction\":\"Input\",\"Value\":\"2\",\"ValueSource\":\"Inherit\",\"SortNum\":1,\"IsSelected\":true,\"DefaultValue\":null,\"IsDefaultValue\":true,\"DisplayName\":null}],\"DisplayName\":null},{\"DocumentType\":\"MainFlowDocument\",\"Id\":\"00000000000000000000000000000000\",\"ParentId\":\"0\",\"Name\":\"主流程\",\"Remark\":null,\"FullPath\":\"Contents\\\\主流程.sflow\",\"EnableVars\":true,\"Vars\":[{\"HtmlId\":\"var_3\",\"Name\":\"var_3\",\"Remark\":null,\"Prefix\":\"$\",\"Scope\":\"Document\",\"VarName\":\"var_3\",\"IsBuildIn\":false,\"IsReadOnly\":false,\"ValueType\":\"String\",\"Direction\":\"Input\",\"Value\":\"\",\"ValueSource\":\"Inherit\",\"SortNum\":1,\"IsSelected\":true,\"DefaultValue\":null,\"IsDefaultValue\":true,\"DisplayName\":null}],\"DisplayName\":null},{\"DocumentType\":\"SubFlowDocument\",\"Id\":\"054cc8b2576d4a2dbc56754b24283365\",\"ParentId\":\"00000000000000000000000000000000\",\"Name\":\"子流程\",\"Remark\":null,\"FullPath\":\"Contents\\\\主流程\\\\子流程.sflow\",\"EnableVars\":true,\"Vars\":[{\"HtmlId\":\"var_5\",\"Name\":\"var_5\",\"Remark\":null,\"Prefix\":\"$\",\"Scope\":\"Document\",\"VarName\":\"var_5\",\"IsBuildIn\":false,\"IsReadOnly\":false,\"ValueType\":\"String\",\"Direction\":\"Input\",\"Value\":\"\",\"ValueSource\":\"Inherit\",\"SortNum\":1,\"IsSelected\":true,\"DefaultValue\":null,\"IsDefaultValue\":true,\"DisplayName\":null}],\"DisplayName\":null}],\"DisplayName\":null}','','',1,'2022-10-10 21:06:48.000',16508640061130151,'2023-02-01 23:47:08.000',16508640061130151,0,0,0,0),(503864098648231936,493792257187516416,494623962114822144,'6acaaed107f54661aac0cd51e315fac6',496427485466988544,'test','test','',1,'1.0.221021.16','1970-01-01 00:00:00.000','1970-01-01 00:00:00.000',0,'','1970-01-01 00:00:00.000','1970-01-01 00:00:00.000',0,0,'','','',0,'2022-10-22 09:36:02.000',16508640061130151,'2022-11-10 23:52:01.000',16508640061130151,0,0,0,0),(505517776950005760,493792257187516416,494623962114822144,'6acaaed107f54661aac0cd51e315fac6',496427485466988544,'a1','a1','',1,'1.0.221021.16','1970-01-01 00:00:00.000','1970-01-01 00:00:00.000',0,'','1970-01-01 00:00:00.000','1970-01-01 00:00:00.000',0,0,'','','a',1,'2022-10-26 23:07:10.000',16508640061130151,'2023-02-01 23:47:15.000',16508640061130151,0,0,0,0),(541036116736741376,493792257187516416,494623962114822144,'6acaaed107f54661aac0cd51e315fac6',514927479811477504,'bbbxxxx','bbb','',1,'1.0.221021.16','1970-01-01 00:00:00.000','1970-01-01 00:00:00.000',0,'','1970-01-01 00:00:00.000','1970-01-01 00:00:00.000',0,0,'','','',1,'2023-02-01 23:24:22.000',16508640061130151,'2023-02-01 23:35:16.000',16508640061130151,0,0,0,0),(547564009906245632,493792257187516416,494618877687238656,'d7fce291377d46fbbaef1d663196f8a8',496427485466988544,'test332','test332','',1,'1.0.0.230221001','1970-01-01 00:00:00.000','1970-01-01 00:00:00.000',0,'','1970-01-01 00:00:00.000','1970-01-01 00:00:00.000',0,0,'','','',1,'2023-02-19 23:43:53.000',16508640061130151,'2023-02-19 23:43:53.000',16508640061130151,0,0,0,0),(547916925372469248,493792257187516416,494618877687238656,'d7fce291377d46fbbaef1d663196f8a8',496427485466988544,'test333','test333','',1,'1.0.0.230220001','1970-01-01 00:00:00.000','1970-01-01 00:00:00.000',0,'','1970-01-01 00:00:00.000','1970-01-01 00:00:00.000',0,0,' 1120000                                                                                                                {\r\n  \"$type\": \"YiSha.Model.Publishes.PublishedInfo, YiSha.Model\",\r\n  \"ProductId\": 493792257187516416,\r\n  \"CateId\": 494618877687238656,\r\n  \"ProjectGuid\": \"d7fce291377d46fbbaef1d663196f8a8\",\r\n  \"Name\": \"ttg\",\r\n  \"Remark\": null,\r\n  \"Version\": \"1.0.0.230220001\",\r\n  \"ReleaseNote\": null,\r\n  \"ReleaseDate\": \"2023-02-20T22:53:07.8565571+08:00\",\r\n  \"Password\": null,\r\n  \"Documents\": [\r\n    {\r\n      \"$type\": \"YiSha.Model.Publishes.PublishedDocument, YiSha.Model\",\r\n      \"DocumentType\": \"Project\",\r\n      \"ParentId\": \"0\",\r\n      \"Name\": \"ttg\",\r\n      \"Remark\": null,\r\n      \"RelativePath\": \"ttg.sproj\",\r\n      \"EnableVars\": true,\r\n      \"Vars\": [\r\n        {\r\n          \"$type\": \"YiSha.Model.Publishes.PublishedVar, YiSha.Model\",\r\n          \"HtmlId\": \"var_1\",\r\n          \"Name\": \"var_1\",\r\n          \"Remark\": null,\r\n          \"Scope\": \"Project\",\r\n          \"VarName\": \"var_1\",\r\n          \"IsBuildIn\": false,\r\n          \"IsReadOnly\": false,\r\n          \"DataType\": \"String\",\r\n          \"Direction\": \"Input\",\r\n          \"Value\": \"3\",\r\n          \"DecryptedValue\": null,\r\n          \"ValueSource\": \"Inherit\",\r\n          \"SortNum\": 0,\r\n          \"IsSelected\": true,\r\n          \"DefaultValue\": null,\r\n          \"IsDefaultValue\": true,\r\n          \"DisplayName\": null\r\n        },\r\n        {\r\n          \"$type\": \"YiSha.Model.Publishes.PublishedVar, YiSha.Model\",\r\n          \"HtmlId\": \"var_2\",\r\n          \"Name\": \"var_2\",\r\n          \"Remark\": null,\r\n          \"Scope\": \"Project\",\r\n          \"VarName\": \"var_2\",\r\n          \"IsBuildIn\": false,\r\n          \"IsReadOnly\": false,\r\n          \"DataType\": \"Password\",\r\n          \"Direction\": \"Input\",\r\n          \"Value\": \"Xqxq866a47HpC6O6hDN5+kyOVE+pqw3sBGJYMhFAChoG9GyE7nwsDo4ArC96CkFOdhOsyEZgVQpsRlwLm/a3Nvrf7waCfpAVL523ZEm3vwpqRAFCqMpxBSxd5R7PJhk7LDRL3nDvtJyShNKKEQZINMltV4RpgShGnHhUEY/Sos0=\",\r\n          \"DecryptedValue\": null,\r\n          \"ValueSource\": \"Inherit\",\r\n          \"SortNum\": 0,\r\n          \"IsSelected\": true,\r\n          \"DefaultValue\": null,\r\n          \"IsDefaultValue\": true,\r\n          \"DisplayName\": null\r\n        }\r\n      ],\r\n      \"DisplayName\": null\r\n    }\r\n  ],\r\n  \"DisplayName\": null\r\n}','','',1,'2023-02-20 23:06:15.000',16508640061130151,'2023-02-21 01:38:13.000',16508640061130151,0,0,0,0),(547956247698083840,493792257187516416,494618877687238656,'d7fce291377d46fbbaef1d663196f8a8',548268345246355456,'aaaab','aaaab','',1,'1.0.0.230221001','1970-01-01 00:00:00.000','1970-01-01 00:00:00.000',0,'','1970-01-01 00:00:00.000','1970-01-01 00:00:00.000',0,0,'','','',1,'2023-02-21 01:42:30.000',16508640061130151,'2023-03-20 22:12:34.000',16508640061130151,0,0,2,0),(557151896704389120,493792257187516416,494618877687238656,'d7fce291377d46fbbaef1d663196f8a8',0,'dddd','ddddd','',1,'1.0.0.230220001','1970-01-01 00:00:00.000','1970-01-01 00:00:00.000',0,'','1970-01-01 00:00:00.000','1970-01-01 00:00:00.000',0,0,'','','',1,'2023-03-18 10:42:44.000',16508640061130151,'2023-03-18 10:42:44.000',16508640061130151,0,0,0,0),(557181793858490368,0,0,'d7fce291377d46fbbaef1d663196f8a8',0,'aaaa','aaaa','',1,'1.0.0.230221001','1970-01-01 00:00:00.000','1970-01-01 00:00:00.000',0,'','1970-01-01 00:00:00.000','1970-01-01 00:00:00.000',0,0,'','','',1,'2023-03-18 12:41:32.000',16508640061130151,'2023-03-18 12:41:32.000',16508640061130151,0,0,0,0),(557182830623330304,0,494618877687238656,'d7fce291377d46fbbaef1d663196f8a8',0,'bbbxxx','bbbxxx','',1,'1.0.0.230221001','1970-01-01 00:00:00.000','1970-01-01 00:00:00.000',0,'','1970-01-01 00:00:00.000','1970-01-01 00:00:00.000',0,0,' 1120000                                                                                                                {\r\n  \"$type\": \"YiSha.Model.Publishes.PublishedInfo, YiSha.Model\",\r\n  \"ProductId\": 493792257187516416,\r\n  \"CateId\": 494618877687238656,\r\n  \"ProjectGuid\": \"d7fce291377d46fbbaef1d663196f8a8\",\r\n  \"Name\": \"ttg\",\r\n  \"Remark\": null,\r\n  \"Version\": \"1.0.0.230221001\",\r\n  \"ReleaseNote\": null,\r\n  \"ReleaseDate\": \"2023-02-21T01:41:25.1213371+08:00\",\r\n  \"Password\": null,\r\n  \"Documents\": [\r\n    {\r\n      \"$type\": \"YiSha.Model.Publishes.PublishedDocument, YiSha.Model\",\r\n      \"DocumentType\": \"Project\",\r\n      \"ParentId\": \"0\",\r\n      \"Name\": \"ttg\",\r\n      \"Remark\": null,\r\n      \"RelativePath\": \"ttg.sproj\",\r\n      \"EnableVars\": true,\r\n      \"Vars\": [\r\n        {\r\n          \"$type\": \"YiSha.Model.Publishes.PublishedVar, YiSha.Model\",\r\n          \"HtmlId\": \"var_1\",\r\n          \"Name\": \"var_1\",\r\n          \"Remark\": null,\r\n          \"Scope\": \"Project\",\r\n          \"VarName\": \"var_1\",\r\n          \"IsBuildIn\": false,\r\n          \"IsReadOnly\": false,\r\n          \"DataType\": \"String\",\r\n          \"Direction\": \"Input\",\r\n          \"Value\": \"sss\",\r\n          \"ValueSource\": \"Inherit\",\r\n          \"SortNum\": 0,\r\n          \"IsSelected\": true,\r\n          \"DefaultValue\": null,\r\n          \"IsDefaultValue\": true,\r\n          \"DisplayName\": null\r\n        },\r\n        {\r\n          \"$type\": \"YiSha.Model.Publishes.PublishedVar, YiSha.Model\",\r\n          \"HtmlId\": \"var_2\",\r\n          \"Name\": \"var_2\",\r\n          \"Remark\": null,\r\n          \"Scope\": \"Project\",\r\n          \"VarName\": \"var_2\",\r\n          \"IsBuildIn\": false,\r\n          \"IsReadOnly\": false,\r\n          \"DataType\": \"Password\",\r\n          \"Direction\": \"Input\",\r\n          \"Value\": \"\",\r\n          \"ValueSource\": \"Inherit\",\r\n          \"SortNum\": 0,\r\n          \"IsSelected\": true,\r\n          \"DefaultValue\": null,\r\n          \"IsDefaultValue\": true,\r\n          \"DisplayName\": null\r\n        }\r\n      ],\r\n      \"DisplayName\": null\r\n    }\r\n  ],\r\n  \"DisplayName\": null\r\n}','','bbb',0,'2023-03-18 12:45:39.000',16508640061130151,'2023-03-20 22:13:08.000',16508640061130151,0,0,1,0),(560058530489438208,493792257187516416,494618877687238656,'d7fce291377d46fbbaef1d663196f8a8',0,'xxxx','xxxx','',1,'1.0.0.0','1970-01-01 00:00:00.000','1970-01-01 00:00:00.000',0,'','1970-01-01 00:00:00.000','1970-01-01 00:00:00.000',0,0,'','','',1,'2023-03-26 11:12:39.000',16508640061130151,'2023-03-26 11:12:39.000',16508640061130151,0,0,1,0),(575227005008613376,514792657864626176,514794398387539968,'d7fce291377d46fbbaef1d663196f8a8',0,'1234','1234','',1,'1.0.0.230221001','1970-01-01 00:00:00.000','1970-01-01 00:00:00.000',0,'','1970-01-01 00:00:00.000','1970-01-01 00:00:00.000',0,0,'','','',1,'2023-05-07 07:46:45.196',16508640061130151,'2023-05-07 13:56:36.028',16508640061130151,0,0,1,0);
+/*!40000 ALTER TABLE `testcase` ENABLE KEYS */;
+
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+
+-- Dump completed on 2023-05-21 16:06:49
+-- Total time: 0:0:0:0:112 (d:h:m:s:ms)

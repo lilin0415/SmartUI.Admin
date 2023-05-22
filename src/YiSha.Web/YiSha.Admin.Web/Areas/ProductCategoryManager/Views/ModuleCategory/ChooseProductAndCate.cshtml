@@ -1,0 +1,122 @@
+﻿@{
+    Layout = "~/Views/Shared/_FormWhite.cshtml";
+}
+
+@*<div class="row cl">
+        <div id="menuTree" class="ztree"></div>
+
+    </div>*@
+
+
+<div class="wrapper">
+    @*<div class="treeShowHideButton" onclick="$.tree.toggleSearch();">
+            <label id="btnShow" title="显示搜索" style="display:none;">︾</label>
+            <label id="btnHide" title="隐藏搜索">︽</label>
+        </div>
+        <div class="treeSearchInput" id="search">
+            <label for="keyword">关键字：</label><input type="text" class="empty" id="keyword" maxlength="50">
+            <button class="btn" id="btn" onclick="$.tree.searchNode()"> 搜索 </button>
+        </div>
+        <div class="treeExpandCollapse">
+            <a href="#" onclick="$.tree.expand()">展开</a> /
+            <a href="#" onclick="$.tree.collapse()">折叠</a>
+        </div>*@
+   
+
+    <input type="hidden" id="productId" col="ProductId" />
+    <input type="hidden" id="productName" col="ProductName" />
+    <input type="hidden" id="cateId" col="CateId" />
+    <input type="hidden" id="cateName" col="CateName" />
+
+    <input type="hidden" id="cateIdPath" col="CateIdPath" />
+    <input type="hidden" id="cateNamePath" col="CateNamePath" />
+
+    <div id="menuTree" class="ztree treeselect"></div>
+</div>
+
+<script type="text/javascript">
+    //默认值
+    //var productId = ys.request("productId");
+    //var cateId = ys.request("cateId");
+    $(function () {
+        $('#menuTree').ysTree({
+            id: "menuTree",
+            url: '@Url.Content("~/ProductCategoryManager/ModuleCategory/GetChooseProductAndCateTreeJson")',
+            check: { enable: false },
+            maxHeight:"100%",
+            expandLevel: 0,
+            callback: { onClick: saveChoose }
+        });
+    });
+
+    function saveChoose(event, treeId, treeNode) {
+       
+        $("#productId").val("");
+        $("#productName").val("");
+        $("#cateId").val("");
+        $("#cateName").val("");
+       
+
+        var nodePathArray=[];
+      
+        //查找根结点
+        var rootNode = treeNode;
+        var currentNode = treeNode;
+        while (currentNode != null) {
+            nodePathArray.push(currentNode);
+
+            currentNode = currentNode.getParentNode();
+
+            if (currentNode != null) {
+                rootNode = currentNode;
+            }
+        }
+
+        console.log(rootNode);
+        //根节点为产品
+        $("#productId").val(rootNode.id);
+        $("#productName").val(rootNode.name);
+
+        var namePath = "";
+        var actions = [];
+
+        //当前选中的是功能模块节点
+        if (treeNode.nodeType == "module") {
+            $("#cateId").val(treeNode.id);
+            $("#cateName").val(treeNode.name);
+
+            var cateIdPath="";
+            var cateNamePath="";
+            for (var i = nodePathArray.length - 2; i >= 0; i--) {
+                var temp = nodePathArray[i];
+                if(i==0)
+                {
+                    cateIdPath += temp.id;
+                    cateNamePath += temp.name;
+                }
+                else {
+                    cateIdPath += temp.id + ',';
+                    cateNamePath += temp.name + '->';
+                }
+            }
+            $("#cateIdPath").val(cateIdPath);
+            $("#cateNamePath").val(cateNamePath);
+        }
+        console.log(nodePathArray);
+    }
+
+  
+    
+
+    function verifyForm(index) {
+        var cateId =$("#cateId").val();
+        var cateName =$("#cateName").val();
+        
+        if (ys.isNullOrEmpty(cateId)) {
+            ys.msgError("请选择具体的模块分类");
+            return false;
+        }
+        return true;
+
+    }
+</script>

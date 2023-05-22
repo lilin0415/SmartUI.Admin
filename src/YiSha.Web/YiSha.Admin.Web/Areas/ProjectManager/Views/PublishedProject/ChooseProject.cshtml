@@ -1,0 +1,169 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Index.cshtml";
+ }
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostingEnvironment
+@section header{
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/zTree/v3/css/metroStyle/metroStyle.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/zTree/v3/js/ztree.min.js"))
+
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/jquery.layout/1.4.4/jquery.layout-latest.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/jquery.layout/1.4.4/jquery.layout-latest.min.js"))
+
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/bootstrap.treetable/1.0/bootstrap-treetable.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/bootstrap.treetable/1.0/bootstrap-treetable.min.js"))
+}
+
+<div class="container-div ui-layout-center">
+    <div class="row">
+        <div id="searchDiv" class="col-sm-12 search-collapse">
+            <input type="hidden" id="productId" col="ProductId">
+            <input type="hidden" id="cateId" col="CateId">
+            <input type="hidden" id="isEnable" col="IsEnable">
+            <div class="select-list">
+                <ul>
+                    <li>
+                        编码：<input id="projectGuid" col="ProjectGuid" type="text" />
+                    </li>
+                    <li>
+                        名称：<input id="name" col="Name" type="text" />
+                    </li>
+                    <li>
+                        <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+       
+        <div class="col-sm-12 select-table table-striped">
+            <table id="gridTable" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+
+    <input type="hidden" id="projectId" col="ProjectId" />
+    <input type="hidden" id="projectName" col="ProjectName" />
+    <input type="hidden" id="projectGuid2" col="ProjectGuid2" />
+    <input type="hidden" id="projectVersion" col="ProjectVersion" />
+    
+</div>
+
+<script type="text/javascript">
+   
+    var productId = ys.request("productId");
+    var cateId = ys.request("cateId");
+    var projectGuid = ys.request("projectGuid");
+
+    cateId=0;
+    $(function () {
+            $('#productId').val(productId);
+            $('#cateId').val(cateId);
+        $('#projectGuid').val(projectGuid);
+        $('#isEnable').val(true);
+
+        initGrid();
+
+        var grid = $('#gridTable')[0];
+        console.log(grid);
+
+    });
+
+    function initGrid() {
+        var queryUrl = '@Url.Content("~/ProjectManager/PublishedProject/GetPageListJson")';
+        $('#gridTable').ysTable({
+            url: queryUrl,
+            singleSelect:true,
+            columns: [
+                //{ checkbox: true, visible: true },
+                { field: 'selectItem', radio: true },
+
+                { field: 'Id', title: 'Id', visible: false },
+
+                { field: 'ProjectGuid', title: '模板编码', width: '120px' },
+                { field: 'Name', title: '模板名称' },
+                { field: 'ReleaseNote', title: '说明' },
+                { field: 'Version', title: '版本号', width: '100px' },
+                {
+                    field: 'ReleaseDate', title: '发版时间', width: '135px', formatter: function (value, row, index) {
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+                //{
+                //    field: 'IsEnable', title: '状态', width: '40px', formatter: function (value, row, index) {
+                //        if (row.IsEnable == "@StatusEnum.Yes.ParseToInt()") {
+                //            return '<span class="badge badge-primary">' + "@StatusEnum.Yes.GetDescription()" + '</span>';
+                //        } else {
+                //            return '<span class="badge badge-warning">' + "@StatusEnum.No.GetDescription()" + '</span>';
+                //        }
+                //    }
+                //}
+                //,{
+                //    title: '操作',
+                //    align: 'center',
+                //    width: '40px',
+                //    formatter: function (value, row, index) {
+                //        var actions = [];
+                //        actions.push('<a class="btn btn-primary btn-xs" href="#" onclick="saveChoose(\'' + row.Id + '\')" ><i class="fa fa-pause-circle-o"></i>选择</a> ');
+                   
+                //        return actions.join('');
+                //    }
+                //}
+
+            ],
+            queryParams: function (params) {
+                var pagination = $('#gridTable').ysTable('getPagination', params);
+                var queryString = $('#searchDiv').getWebControls(pagination);
+                return queryString;
+            }
+            , onCheck: function () {
+                saveChoose();
+            }
+        });
+    }
+
+    function searchGrid() {
+        $('#gridTable').ysTable('search');
+        resetToolbarStatus();
+    }
+
+    function saveChoose() {
+        $("#projectId").val("");
+        $("#projectName").val("");
+        $("#projectGuid2").val("");
+        $("#projectVersion").val("");
+
+        var selectedRow = $('#gridTable').bootstrapTable('getSelections');
+       
+        if(selectedRow.length===1)
+        {
+            var data = selectedRow[0];
+            console.log(data);
+
+            $("#projectId").val(data.Id);
+            $("#projectName").val(data.Name);
+            $("#projectGuid2").val(data.ProjectGuid);
+            $("#projectVersion").val(data.Version);
+        }
+       
+    }
+    function verifySave() {
+        var selectedGuid = $("#projectGuid2").val();
+        if (ys.isNullOrEmpty(selectedGuid)) {
+            ys.msgError('请选择模板');
+            return false;
+        }
+
+        var upgrade = ys.request("upgrade");
+        if (upgrade==="1")
+        {
+            var projectGuid = ys.request("projectGuid");
+          
+            if (projectGuid != selectedGuid)
+            {
+                ys.msgError('选择的模板和当前将要升级的模板不一样');
+                return false;
+            }
+        }
+        return true;
+    }
+</script>
+

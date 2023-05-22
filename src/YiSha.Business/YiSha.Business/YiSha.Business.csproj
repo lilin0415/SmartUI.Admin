@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="TenantManage\**" />
+    <EmbeddedResource Remove="TenantManage\**" />
+    <None Remove="TenantManage\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="TestTaskManager\TenantDeviceBLL.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\YiSha.Entity\YiSha.Entity\YiSha.Entity.csproj" />
+    <ProjectReference Include="..\..\YiSha.Entity\YiSha.Enum\YiSha.Enum.csproj" />
+    <ProjectReference Include="..\..\YiSha.Util\YiSha.CodeGenerator\YiSha.CodeGenerator.csproj" />
+    <ProjectReference Include="..\YiSha.Service\YiSha.Service.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ProductCategoryManager\" />
+    <Folder Include="ToolManage\" />
+  </ItemGroup>
+
+</Project>

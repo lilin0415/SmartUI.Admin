@@ -1,0 +1,253 @@
+﻿@using YiSha.Entity.SystemManage
+@using YiSha.Model.Publishes
+@{
+    Layout = "~/Views/Shared/_FormWhite.cshtml";
+}
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostingEnvironment
+@section header{
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/zTree/v3/css/metroStyle/metroStyle.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/zTree/v3/js/ztree.min.js"))
+
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/jquery.layout/1.4.4/jquery.layout-latest.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/jquery.layout/1.4.4/jquery.layout-latest.min.js"))
+
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/bootstrap.treetable/1.0/bootstrap-treetable.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/bootstrap.treetable/1.0/bootstrap-treetable.min.js"))
+}
+
+<div class="wrapper animated fadeInRight">
+
+
+    <form id="form" class="form-horizontal m">
+      
+        <div class="row">
+            <div class="col-sm-3" style="visibility:hidden;height:0px;">
+                <div class="box box-main">
+                    <div class="box-header">
+                        <div class="box-title">
+                            功能模块列表
+                        </div>
+                        <div class="box-tools pull-right">
+                            @* <a type="button" class="btn btn-box-tool menuItem" href="#" onclick="showDepartmentForm()" title="管理部门"><i class="fa fa-edit"></i></a>
+                            <button type="button" class="btn btn-box-tool" id="btnExpand" title="展开" style="display:none;"><i class="fa fa-chevron-up"></i></button>
+                            <button type="button" class="btn btn-box-tool" id="btnCollapse" title="折叠"><i class="fa fa-chevron-down"></i></button>*@
+                            <button type="button" class="btn btn-box-tool" id="btnRefresh" title="刷新"><i class="fa fa-refresh"></i></button>
+                        </div>
+                    </div>
+                    <div class="ui-layout-content">
+                        <div id="varFileTree" class="ztree"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12">
+
+                @{
+                    var isFrist = true;
+                    var index = -1;
+
+                    PublishedInfo menuList = ViewBag.Info;
+                    foreach (var doc in menuList.Documents)
+                    {
+                        index += 1;
+                        var activeClass = isFrist ? " active" : " ";
+                        isFrist = false;
+
+                        <table id="tab-@doc.Id" data-mobile-responsive="true" class="table table-hover table-striped @activeClass">
+                            <thead>
+                                <tr>
+                                    <th style="width:120px;"><div class="th-inner ">变量名称</div><div class="fht-cell"></div></th>
+                                    <th style="width:420px;"><div class="th-inner ">变量值</div><div class="fht-cell"></div></th>
+                                    <th style=""><div class="th-inner ">备注</div><div class="fht-cell"></div></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @foreach (var varItem in doc.Vars)
+                                {
+
+                                    <tr data-index="@index" class="VarItemRow">
+
+                                        <input type="hidden" name="varItem[DocId][]" value="@doc.Id" />
+                                        <input type="hidden" name="varItem[VarName][]" value="@varItem.VarName" />
+
+                                        <td style="padding:4px 8px;">@varItem.VarName</td>
+                                        <td style="padding:4px 8px;">
+
+                                            @{
+                                                if (varItem.DataType == VariableDataType.Password)
+                                                {
+                                                    <input name="varItem[Value][]" type="password" class="form-control" value="@varItem.Value" />
+
+                                                }
+                                                else
+                                                {
+                                                    <input name="varItem[Value][]" type="text" class="form-control" value="@varItem.Value" />
+
+                                                }
+                                            }
+                                        </td>
+                                        <td style="padding:4px 8px;">@varItem.Remark</td>
+
+                                    </tr>
+
+                                }
+
+
+                            </tbody>
+                        </table>
+
+                    }
+                }
+
+            </div>
+        </div>
+     
+
+    </form>
+</div>
+
+<script type="text/javascript">
+    var projectId = ys.request("projectId");
+    
+    $(function () {
+        initVarFileTreeGrid();
+
+        //getForm();
+
+        $('#form').validate({
+            rules: {
+                //productId: { required: true }
+            }
+        });
+    });
+
+    function initVarFileTreeGrid() {
+        $('#varFileTree').ysTree({
+            url: '@Url.Content("~/ProjectManager/PublishedProject/GetVarFileTree")' + '?projectId=' + projectId,
+            async: true,
+            expandLevel: 2,
+            maxHeight: "700px",
+            callback: {
+                onClick: function (event, treeId, treeNode) {
+                    console.log($(".tab-pane"));
+                    //
+                    $(".tab-pane").removeClass('active');
+                    console.log($(".tab-pane"));
+                    //id="tab-doc.Id"
+                    $('#tab-' + treeNode.id).addClass('active');
+                    console.log($('#tab-' + treeNode.Id));
+                    console.log(treeNode);
+
+                    //$("#productId").val("");
+                    //$("#cateId").val("");
+                    //$("#projectGuid").val("");
+
+                    ////查找根结点
+                    //var rootNode = treeNode;
+                    //var parentNode = treeNode;
+                    //while (parentNode != null) {
+                    //    parentNode = parentNode.getParentNode();
+                    //    if (parentNode != null) {
+                    //        rootNode = parentNode;
+                    //    }
+                    //}
+
+                    ////根节点为产品
+                    //$("#productId").val(rootNode.id);
+
+                    ////当前选中的是功能模块节点
+                    //if (treeNode.nodeType == "module") {
+                    //    $("#cateId").val(treeNode.id);
+                    //}
+
+                    ////当前选中的是用例模板
+                    //if (treeNode.nodeType == "project") {
+                    //    var cateNode = treeNode.getParentNode();
+                    //    $("#cateId").val(cateNode.id);
+                    //    $("#projectGuid").val(treeNode.id);
+                    //}
+
+                    //searchGrid();
+                }
+            }
+        });
+    }
+    function getForm() {
+        //if (projectId > 0) {
+        //    ys.ajax({
+        //        url: '@Url.Content("~/ProjectManager/PublishedProject/GetFormJson")' + '?id=' + id,
+        //        type: 'get',
+        //        success: function (obj) {
+        //            if (obj.Status) {
+        //                $('#form').setWebControls(obj.Result);
+        //            }
+        //        }
+        //    });
+        //}
+        //else 
+        {
+            var defaultData = {};
+            $('#form').setWebControls(defaultData);
+        }
+    }
+
+    function saveForm(index) {
+        var customers = new Array();
+        var varItemIndex = 0;
+        $("tr.VarItemRow").each(function () {
+            var row = $(this);
+            var customer = {};
+            customer.DocId = row.find("[name='varItem[DocId][]']").eq(0).val();
+            customer.VarName = row.find("[name='varItem[VarName][]']").eq(0).val();
+            customer.Value = row.find("[name='varItem[Value][]']").eq(0).val();
+            customer.IsDefaultValue = row.find("[name='varItem[IsDefaultValue][]']").eq(0).is(':checked');
+            //
+            customers.push(customer);
+            varItemIndex += 1;
+        });
+      
+        if ($('#form').validate().form()) {
+           // var postData = $('#form').getWebControls({ Id: projectId });
+            ys.ajax({
+                url: '@Url.Content("~/ProjectManager/PublishedProject/SaveProjectVarForm")' + '?projectId=' + projectId,
+                type: 'post',
+                data: { savingItems: customers },
+                success: function (obj) {
+                    if (obj.Status) {
+                        ys.msgSuccess(obj.Message);
+                        parent.searchGrid();
+                        parent.layer.close(index);
+                        console.log(index);
+                    }
+                    else {
+                        ys.msgError(obj.Message);
+                    }
+                }
+            });
+        }
+    }
+
+    function arrayToObj (array) {
+        if (typeof array != 'object') {
+            return {};
+        }
+
+        var resultObj = {};
+        for (k in array) {
+            //console.log(array[k]);
+            if (typeof array[k] == 'object') {
+                //递归调用
+                resultObj[k] = arguments.callee(array[k]);
+            } else {
+                resultObj[k] = array[k];
+            }
+
+        }
+
+        return resultObj;
+    };
+    function toJsonString(obj) {
+        return JSON.stringify(obj);
+    }
+</script>
+

@@ -1,0 +1,261 @@
+﻿@{
+    Layout = "~/Views/Shared/_FormWhite.cshtml";
+}
+
+<div class="wrapper animated fadeInRight">
+    <form id="form" class="form-horizontal m">
+       
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">产品/功能模块<font class="red"> *</font></label>
+            <div class="col-sm-8">
+                <input type="hidden" id="productId" col="ProductId" />
+                @*<input type="hidden" id="productName" col="ProductName" />*@
+                <input type="hidden" id="cateId" col="CateId" />
+                @*<input type="hidden" id="cateName" col="CateName" />*@
+
+                <input id="productCateFullName" col="ProductCateFullName" type="text" class="form-control" readonly="readonly" onclick="showProductCateChooseForm()" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">@(GlobalContext.SystemConfig.CaseName)编码<font class="red"> *</font></label>
+            <div class="col-sm-8">
+                <input id="code" col="Code" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">@(GlobalContext.SystemConfig.CaseName)名称<font class="red"> *</font></label>
+            <div class="col-sm-8">
+                <input id="name" col="Name" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">优先级<font class="red"> *</font></label>
+            <div class="col-sm-8" id="priority" col="Priority">
+                @*<input id="priority" col="Priority" type="text" class="form-control" />*@
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">执行环境</label>
+            <div class="col-sm-8">
+                <div id="envId" col="EnvId"></div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">模板<font class="red"> *</font></label>
+            <div class="col-sm-8">
+                <input type="hidden" id="projectGuid" col="ProjectGuid" />
+                <input id="projectName" col="ProjectName" type="text" class="form-control" readonly="readonly" onclick="showProjectChooseForm()" />
+                <input id="specialVersion" col="SpecialVersion" type="text" class="form-control" readonly="readonly" onclick="showProjectChooseForm()" />
+                
+
+                @*<div id="specialVersion" col="SpecialVersion"></div>*@
+                @*<input id="specialVersion" col="SpecialVersion" type="text" class="form-control" />*@
+            </div>
+        </div>
+      @*  <div class="form-group">
+            <label class="col-sm-3 control-label ">概述</label>
+            <div class="col-sm-8">
+                <input id="summary" col="Summary" type="text" class="form-control" />
+            </div>
+        </div>*@
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">描述</label>
+            <div class="col-sm-8">
+                <textarea id="remark" col="Remark" type="text" class="form-control" style="height:60px" ></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">启用状态</label>
+            <div class="col-sm-8" id="isEnable" col="IsEnable">
+                @*<input id="isEnable" col="IsEnable" type="text" class="form-control" />*@
+            </div>
+        </div>
+      @*  <div class="form-group">
+            <label class="col-sm-3 control-label ">SortNum</label>
+            <div class="col-sm-8">
+                <input id="sortNum" col="SortNum" type="text" class="form-control" />
+            </div>
+        </div>*@
+    </form>
+</div>
+
+<script type="text/javascript">
+    var id = ys.request("id");
+    var productId = ys.request("productId");
+    var cateId = ys.request("cateId");
+    //var projectGuid = ys.request("projectGuid");
+    var hasBeenUsed=false;
+
+    $(function () {
+          //选择执行环境
+        initEnvList();
+      
+        $("#priority").ysRadioBox({ data: ys.getJson(@Html.Raw(typeof(CasePriorityEnumType).EnumToDictionaryString())), default: '1' });
+        $("#isEnable").ysRadioBox({ data: ys.getJson(@Html.Raw(typeof(StatusEnum).EnumToDictionaryString())), default:'1' });
+
+
+        getForm();
+     
+        $('#form').validate({
+            rules: {
+                code: { required: true }
+                , name: { required: true }
+, priority: { required: true }
+                , cateId: { required: true }
+                , productCateFullName: { required: true }
+                //envId_select: { required: true },
+                //specialVersion: { required: true }
+                , projectName: { required: true }
+            }
+        });
+    });
+    function initEnvList() {
+        //选择执行环境
+        $("#envId").ysComboBox({
+            url: '@Url.Content("~/TestCaseManager/ExecEnvironment/GetListJson")',
+            key: "Id",
+            value: "Name",
+            class: "form-control",
+            //multiple: true
+        });
+    }
+
+    function getForm() {
+      
+        ys.ajax({
+            url: '@Url.Content("~/TestCaseManager/TestCase/GetFormJson")' + '?id=' + id + '&productId=' + productId + '&cateId=' + cateId,
+            type: 'get',
+            success: function (obj) {
+                if (obj.Status) {
+                    $('#form').setWebControls(obj.Result);
+                    if (obj.Result.HasBeenUsed) {
+                        hasBeenUsed=true;
+                        $('#code').attr({ 'disabled': 'disabled', 'readonly': 'readonly' });
+                        //$('#specialVersion').attr({ 'disabled': 'disabled', 'readonly': 'readonly' });
+                        $('#specialVersion_select').attr({ 'disabled': 'disabled', 'readonly': 'readonly' });
+                    }
+                }
+                else {
+                    ys.msgError(obj.Message);
+                }
+            }
+        });
+    }
+
+    function saveForm(index) {
+        if ($('#form').validate().form()) {
+            var postData = $('#form').getWebControls({ Id: id });
+            ys.ajax({
+                url: '@Url.Content("~/TestCaseManager/TestCase/SaveFormJson")',
+                type: 'post',
+                data: postData,
+                success: function (obj) {
+                    if (obj.Status) {
+                        ys.msgSuccess(obj.Message);
+                        parent.searchGrid();
+                        parent.layer.close(index);
+                    }
+                    else {
+                        ys.msgError(obj.Message);
+                    }
+                }
+            });
+        }
+    }
+
+    function showProductCateChooseForm() {
+        var productId = $("#productId").val();
+        var cateId = $("#cateId").val();
+        ys.openDialog({
+            title: "选择产品模块",
+            content: '@Url.Content("~/ProductCategoryManager/ModuleCategory/ChooseProductAndCate")' + '?productId=' + productId + '&cateId=' + cateId,
+            width:'650px',
+            height:'600px',
+            moveOut: true,
+            shadeClose: true,
+            callback: function (index, layero) {
+                //var index = parent.layer.getFrameIndex(window.name);
+               
+                var childFrame = parent.window[layero.find('iframe')[0]['name']];
+                console.log(childFrame);
+
+                if (childFrame.verifyForm(index))
+                {
+                    var productId = $(childFrame.document.body).find('#productId').val();
+                    var productName = $(childFrame.document.body).find('#productName').val();
+                    var cateId = $(childFrame.document.body).find('#cateId').val();
+                    var cateName = $(childFrame.document.body).find('#cateName').val();
+                    var cateIdPath = $(childFrame.document.body).find('#cateIdPath').val();
+                    var cateNamePath = $(childFrame.document.body).find('#cateNamePath').val();
+
+                    if (ys.isNullOrEmpty(cateId)) {
+                       
+                    }
+                    else {
+                        console.log(productId, productName, cateId, cateName);
+                        $("#productId").val(productId);
+                        //$("#productName").val(productName);
+                        $("#cateId").val(cateId);
+                        //$("#cateName").val(cateName);
+
+                        $("#productCateFullName").val(productName + "->" + cateNamePath);
+                        parent.layer.close(index);
+                    }
+
+                    //ProductCateFullName
+                }
+
+               
+            }
+        });
+    }
+    function showProjectChooseForm() {
+        if (hasBeenUsed)
+        {
+            return;
+        }
+        var productId = $("#productId").val();
+        var cateId = $("#cateId").val();
+        ys.openDialog({
+            title: "选择@(GlobalContext.SystemConfig.CaseName)模板",
+            content: '@Url.Content("~/ProjectManager/PublishedProject/ChooseProject")' + '?productId=' + productId + '&cateId=' + cateId,
+            moveOut:true,
+            width: '1100px',
+            height:'700px',
+
+            shadeClose: true,
+            callback: function (index, layero) {
+                var childFrame = parent.window[layero.find('iframe')[0]['name']];
+                if (childFrame.verifySave())
+                {
+                    var projectId = $(childFrame.document.body).find('#projectId').val();
+                    var projectName = $(childFrame.document.body).find('#projectName').val();
+                    var projectGuid = $(childFrame.document.body).find('#projectGuid2').val();
+                    var projectVersion = $(childFrame.document.body).find('#projectVersion').val();
+
+                    if (ys.isNullOrEmpty(projectGuid)) {
+                        parent.layer.close(index);
+                        //ys.msgError('选择的模板和当前正在使用的模板不一样');
+                    }
+                    else {  
+                        //specialVersion
+                        $("#projectGuid").val(projectGuid);
+                        $("#projectName").val(projectName);
+                        $("#specialVersion").val(projectVersion);
+                        //$("#cateId").val(cateId);
+                        //$("#cateName").val(cateName);
+
+                        //$("#ProductCateFullName").val(productName + "->" + cateName);
+
+                        //ProductCateFullName
+                        parent.layer.close(index);
+                    }
+                }
+                
+               
+            }
+        });
+    }
+</script>
+

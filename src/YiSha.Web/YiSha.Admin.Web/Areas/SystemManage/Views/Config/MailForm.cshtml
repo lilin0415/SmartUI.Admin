@@ -1,0 +1,129 @@
+﻿@{
+    Layout = "~/Views/Shared/_FormWhite.cshtml";
+}
+
+
+
+<div class="wrapper animated fadeInRight">
+    <form id="form" class="form-horizontal m">
+
+        <fieldset>
+            <legend>邮箱信息</legend>
+            <div class="form-group">
+                <label class="col-sm-2 control-label ">SMTP服务地址<font class="red"> *</font></label>
+                <div class="col-sm-9">
+                    <input id="mailHost" col="MailHost" type="text" class="form-control" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label ">端口<font class="red"> *</font></label>
+                <div class="col-sm-9">
+                    <input id="mailPort" col="MailPort" type="text" class="form-control" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label ">用户名<font class="red"> *</font></label>
+                <div class="col-sm-9">
+                    <input id="mailUserName" col="MailUserName" type="text" class="form-control" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label ">密码<font class="red"> *</font></label>
+                <div class="col-sm-9">
+                    <input id="mailPassword" col="MailPassword" type="password" class="form-control" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label ">启用Ssl</label>
+                <div class="col-sm-9" id="mailEnableSsl" col="MailEnableSsl"></div>
+
+             @*   <div class="col-sm-9">
+                    <input id="mailEnableSsl" col="MailEnableSsl" type="checkbox" class="form-control" />
+                </div>*@
+            </div>
+        </fieldset>
+
+
+        <div class="form-group">
+            <div class="col-sm-5"></div>
+            <div class="col-sm-2">
+                <button type="button" onclick="saveForm();" class="btn btn-w-m btn-primary" style="border-color: #1E9FFF;background-color: #1E9FFF;color: #fff;">
+                    确认
+                </button>
+            </div>
+            <div class="col-sm-5"></div>
+
+        </div>
+
+    </form>
+</div>
+
+
+
+
+<script type="text/javascript">
+    var id = 1;
+    $("#mailEnableSsl").ysRadioBox({ data: ys.getJson(@Html.Raw(typeof(IsEnum).EnumToDictionaryString())), default: '1' });
+
+    $(function () {
+        getForm();
+
+        $('#form').validate({
+            rules: {
+
+                mailHost: { required: true }
+                , mailPort: {
+                    required: true, 
+                    digits: true
+                }
+                , mailUserName: { required: true }
+                , mailPassword: { required: true }
+                
+
+            }
+        });
+    });
+
+    function getForm() {
+        id = 1;
+        if (id > 0) {
+            ys.ajax({
+                url: '@Url.Content("~/SystemManage/Config/GetIndexFormJson")' + '?id=' + id,
+                type: 'get',
+                success: function (obj) {
+                    if (obj.Status) {
+                        $('#form').setWebControls(obj.Result);
+                    }
+                }
+            });
+        }
+        else {
+            var defaultData = {};
+            $('#form').setWebControls(defaultData);
+        }
+    }
+
+    function saveForm(index) {
+        if ($('#form').validate().form()) {
+            var postData = $('#form').getWebControls({ Id: id });
+            ys.ajax({
+                url: '@Url.Content("~/SystemManage/Config/SaveMailFormJson")',
+                type: 'post',
+                data: postData,
+                success: function (obj) {
+                    if (obj.Status) {
+                        ys.msgSuccess(obj.Message);
+                        window.location.reload();
+                        //parent.searchGrid();
+                        //parent.layer.close(index);
+                    }
+                    else {
+                        ys.msgError(obj.Message);
+                    }
+                }
+            });
+        }
+    }
+</script>
+

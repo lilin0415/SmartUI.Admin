@@ -1,0 +1,286 @@
+﻿@{
+    Layout = "~/Views/Shared/_Index.cshtml";
+ }
+<div class="container-div">
+    <div class="row">
+        <div id="searchDiv" class="col-sm-12 search-collapse">
+            <div class="select-list">
+                <ul>
+                    <li>
+                        计划ID：<input id="id" col="Id" type="text" />
+                    </li>
+                    <li>
+                        计划名称：<input id="name" col="Name" type="text" />
+                    </li>
+                    @*<li>
+                        @(GlobalContext.SystemConfig.CaseName)编号：<input id="caseCode" col="CaseCode" type="text" />
+                    </li>
+                    <li>
+                        @(GlobalContext.SystemConfig.CaseName)名称：<input id="caseName" col="CaseName" type="text" />
+                    </li>*@
+                    <li>
+                        <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="btn-group-sm hidden-xs" id="toolbar">
+            <a id="btnAdd" class="btn btn-success" onclick="showSaveForm(true)"><i class="fa fa-plus"></i> 新增</a>
+            <a id="btnEdit" class="btn btn-primary disabled" onclick="showSaveForm(false)"><i class="fa fa-edit"></i> 修改</a>
+            <a id="btnDelete" class="btn btn-danger disabled" onclick="deleteForm()"><i class="fa fa-remove"></i> 删除</a>
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="gridTable" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        initGrid();
+    });
+
+    function initGrid() {
+        var queryUrl = '@Url.Content("~/TestTaskManager/TestTask/GetPageListJson")';
+        $('#gridTable').ysTable({
+            url: queryUrl,
+            columns: [
+                { checkbox: true, visible: true },
+                { field: 'Id', title: '计划ID', visible: true, width: '100px', visible: false },
+               
+                { field: 'Name', title: '计划名称' },
+                { field: 'EnvDisplayName', title: '执行环境', width: '60px' },
+
+                { field: 'CronExpression', title: '触发时间' },
+
+
+                {
+                    field: 'NextRunTime', title: '下次运行时间', width: '140px', formatter: function (value, row, index) {
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+                {
+                    field: 'PrevRunTime', title: '上次运行时间', width: '140px', formatter: function (value, row, index) {
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+
+                {
+                    field: 'FromTime', title: '起始时间', width: '140px', formatter: function (value, row, index) {
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+                {
+                    field: 'ToTime', title: '终止时间', width: '140px', formatter: function (value, row, index) {
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+              
+                {
+                    field: 'PrevStartTime', title: '上次开始时间', width: '140px', visible: false, formatter: function (value, row, index) {
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+                {
+                    field: 'PrevEndTime', title: '上次结束时间', width: '140px', visible: false, formatter: function (value, row, index) {
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+                {
+                    field: 'PrevFinishStatus', title: '上次结果', visible: false, formatter: function (value, row, index) {
+                        if (row.PrevFinishStatus == "@FinishStatusEnumType.None.ParseToInt()") {
+                            return '';
+                        } else if (row.PrevFinishStatus == "@FinishStatusEnumType.Succeeded.ParseToInt()") {
+                            return '<span class="badge badge-success">' + "@FinishStatusEnumType.Succeeded.GetDescription()" + '</span>';
+                        }
+                        else if (row.PrevFinishStatus == "@FinishStatusEnumType.Failed.ParseToInt()") {
+                            return '<span class="badge badge-danger">' + "@FinishStatusEnumType.Failed.GetDescription()" + '</span>';
+                        }
+                        else if (row.PrevFinishStatus == "@FinishStatusEnumType.Cancelled.ParseToInt()") {
+                            return '<span class="badge badge-warning">' + "@FinishStatusEnumType.Cancelled.GetDescription()" + '</span>';
+                        }
+                        else if (row.PrevFinishStatus == "@FinishStatusEnumType.Aborted.ParseToInt()") {
+                            return '<span class="badge badge-warning">' + "@FinishStatusEnumType.Aborted.GetDescription()" + '</span>';
+                        }
+                    }
+                },
+                { field: 'PrevReason', title: '上次提示', visible: false },
+                { field: 'CreatorUserName', title: '创建人', width: '40px', visible: false },
+                {
+                    field: 'BaseCreateTime', title: '创建时间', width: '135px', formatter: function (value, row, index) {
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+                //{ field: 'BaseModifyTime', title: '修改时间',width:'140px' },
+                {
+                    field: 'IsEnable', title: '状态',width:'40px', formatter: function (value, row, index) {
+                        if (row.IsEnable == "@StatusEnum.Yes.ParseToInt()") {
+                            return '<span class="badge badge-primary">' + "运行中" + '</span>';
+                        } else {
+                            return '<span class="badge badge-danger">' + "已停止" + '</span>';
+                        }
+                    }
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    width: '220px',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-primary btn-xs" href="#" onclick="openTaskItemPage(\'' +  row.Id + '\',\'' + row.EnvId + '\')" ><i class="fa fa-pause-circle-o"></i>@GlobalContext.SystemConfig.CaseName</a> ');
+                        //actions.push('<a class="btn btn-primary btn-xs" href="#" onclick="openDeployTaskPage(\'' + row.Id + '\')" ><i class="fa fa-pause-circle-o"></i>部署</a> ');
+                        actions.push('<a class="btn btn-primary btn-xs" href="#" onclick="execTask(\'' + row.Id + '\')" ><i class="fa fa-pause-circle-o"></i>立即执行</a> ');
+                        if (row.IsEnable == "@StatusEnum.Yes.ParseToInt()") {
+                            actions.push('<a class="btn btn-primary btn-xs" href="#" onclick="ChangeJobStatus(\'' + row.Id + '\',@StatusEnum.No.ParseToInt())"><i class="fa fa-pause-circle-o"></i>停止</a> ');
+                        } else {
+                            actions.push('<a class="btn btn-primary btn-xs" href="#" onclick="ChangeJobStatus(\'' + row.Id + '\',@StatusEnum.Yes.ParseToInt())"><i class="fa fa-play-circle-o"></i>启动</a> ');
+                        }
+                        //if (row.JobStatus == "@StatusEnum.Yes.ParseToInt()") {
+                        //    actions.push('<a class="btn btn-primary btn-xs" href="#" onclick="ChangeJobStatus(\'' + row.Id + '\',@StatusEnum.No.ParseToInt())"><i class="fa fa-pause-circle-o"></i>暂停</a> ');
+                        //} else {
+                        //    actions.push('<a class="btn btn-primary btn-xs" href="#" onclick="ChangeJobStatus(\'' + row.Id + '\',@StatusEnum.Yes.ParseToInt())"><i class="fa fa-play-circle-o"></i>执行</a> ');
+                        //}
+                        return actions.join('');
+                    }
+                }
+            ],
+            queryParams: function (params) {
+                var pagination = $('#gridTable').ysTable('getPagination', params);
+                var queryString = $('#searchDiv').getWebControls(pagination);
+                return queryString;
+            }
+        });
+    }
+
+    //用例明细对话框
+    function openTaskItemPage(taskId,envId) {
+        console.log(taskId);
+
+        var url = '@Url.Content("~/TestTaskManager/TestTaskItem/TestTaskItemIndex")' + '?taskId=' + taskId + '&envId=' + envId;
+        ys.openDialog({
+            title: '@(GlobalContext.SystemConfig.CaseName)明细',
+            content: url,
+            maxWidth: true,
+            btn:'关闭',
+            yes: function(index, layero) {
+                //按钮【按钮一】的回调
+               
+            },
+            callback: function (index, layero) {
+                //var iframeWin = window[layero.find('iframe')[0]['name']];
+                //iframeWin.saveForm(index);
+
+                console.log(layero);
+                layer.closeAll();
+            }
+        });
+
+        //createMenuItem(url, "用例明细")
+    }
+
+    //部署对话框
+    function openDeployTaskPage(taskId) {
+        console.log(taskId);
+
+        ys.openDialog({
+            title: '部署',
+            content: '@Url.Content("~/TestTaskManager/TestTask/DeployTask")' + '?taskId=' + taskId,
+            width: '900px',
+            height: '550px',
+            callback: function (index, layero) {
+                var iframeWin = window[layero.find('iframe')[0]['name']];
+                iframeWin.saveForm(index);
+            }
+        });
+        
+    }
+    function execTask(taskId) {
+        
+        console.log(taskId);
+        ys.confirm('确认要立即执行吗?', function () {
+            
+            ys.ajax({
+                url: '@Url.Content("~/TestTaskManager/TestTask/ExecTask")' + '?taskId=' + taskId,
+                type: 'post',
+                success: function (obj) {
+                    if (obj.Status) {
+                        ys.msgSuccess(obj.Message);
+                        //searchGrid();
+                    }
+                    else {
+                        ys.msgError(obj.Message);
+                    }
+                }
+            });
+        });
+    }
+
+    function searchGrid() {
+        $('#gridTable').ysTable('search');
+        resetToolbarStatus();
+    }
+
+    function showSaveForm(bAdd) {
+        var id = 0;
+        if (!bAdd) {
+            var selectedRow = $('#gridTable').bootstrapTable('getSelections');
+            if (!ys.checkRowEdit(selectedRow)) {
+                return;
+            }
+            else {
+                id = selectedRow[0].Id;
+            }
+        }
+        ys.openDialog({
+            title: id > 0 ? '编辑计划' : '添加计划',
+            
+            content: '@Url.Content("~/TestTaskManager/TestTask/TestTaskForm")' + '?id=' + id,
+            callback: function (index, layero) {
+                var iframeWin = window[layero.find('iframe')[0]['name']];
+                iframeWin.saveForm(index);
+            }
+        });
+    }
+
+    function deleteForm() {
+        var selectedRow = $('#gridTable').bootstrapTable('getSelections');
+        if (ys.checkRowDelete(selectedRow)) {
+            ys.confirm('确认要删除选中的' + selectedRow.length + '条数据吗？', function () {
+                var ids = ys.getIds(selectedRow);
+                ys.ajax({
+                    url: '@Url.Content("~/TestTaskManager/TestTask/DeleteFormJson")' + '?ids=' + ids,
+                    type: 'post',
+                    success: function (obj) {
+                        if (obj.Status) {
+                            ys.msgSuccess(obj.Message);
+                            searchGrid();
+                        }
+                        else {
+                            ys.msgError(obj.Message);
+                        }
+                    }
+                });
+            });
+        }
+    }
+    function ChangeJobStatus(id, jobStatus) {
+        var postData = {};
+        postData.Id = id;
+        postData.IsEnable = jobStatus;
+        ys.ajax({
+            url: '@Url.Content("~/TestTaskManager/TestTask/ChangeStatusJson")',
+            type: "post",
+            data: postData,
+            success: function (obj) {
+                if (obj.Status) {
+                    ys.msgSuccess(obj.Message);
+                    searchGrid();
+                }
+                else {
+                    ys.msgError(obj.Message);
+                }
+            }
+        });
+    }
+
+</script>

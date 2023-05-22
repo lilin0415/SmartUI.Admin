@@ -1,0 +1,391 @@
+﻿@{
+    Layout = "~/Views/Shared/_FormWhite.cshtml";
+}
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostingEnvironment
+@section header{
+@*    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/yisha/css/jquery-cron-quartz.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/yisha/js/jquery-cron-quartz.min.js"))
+  
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/cron/jquery-cron.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/cron/jquery-cron.min.js"))*@
+
+   @* @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/multiple-select/1.2.0/multiple-select.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/multiple-select/1.2.0/multiple-select.min.js"))
+
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/JSCronUI/jsCronUI.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/JSCronUI/jsCronUI.min.js"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/JSCronUI/jsCronUI-template.min.js"))
+*@
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/cron-selector/cron-selector.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/cron-selector/cron-selector.min.js"))
+}
+
+@*http://www.cronmaker.com/?0*@
+<div class="wrapper animated fadeInRight">
+    <form id="form" class="form-horizontal m">
+        @*<div class="form-group">
+            <label class="col-sm-3 control-label ">TenantId<font class="red"> *</font></label>
+            <div class="col-sm-8">
+                <input id="tenantId" col="TenantId" type="text" class="form-control" />
+            </div>
+        </div>*@
+
+        <div class="form-group">
+                <label class="col-sm-2 control-label ">名称<font class="red"> *</font></label>
+            <div class="col-sm-10">
+                <input id="name" col="Name" type="text" class="form-control" />
+            </div>
+        </div>
+@*        <div class="form-group">
+            <label class="col-sm-3 control-label ">临时任务</label>
+            <div class="col-sm-8" id="isTemp" col="IsTemp">
+                
+            </div>
+        </div>*@
+        <div class="form-group">
+            <label class="col-sm-2 control-label">执行环境<font class="red"> *</font></label>
+            <div class="col-sm-10">
+                <div id="envId" col="EnvId"></div>
+            </div>
+        </div>
+     
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">触发时间</label>
+            <div class="col-sm-10">
+                <div id="example1-cron" class="cron-builder"></div>
+                <div class="js-cron">
+                    <div class="js-cron-template">
+                    </div>
+                </div>
+                <div id="Schedule" class="c-schedule"></div>
+
+                <div id="cronSelector"></div>
+
+                <input id="cronExpression" col="CronExpression" type="text" class="form-control" />
+            </div>
+        </div>
+       
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">起止时间</label>
+            <div class="col-sm-4">
+                <input id="fromTime" col="FromTime" type="text" class="form-control" />
+            </div>
+            
+            <div class="col-sm-6">
+                <input id="toTime" col="ToTime" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">最大执行次数</label>
+            <div class="col-sm-4">
+                <input id="maxExecCount" col="MaxExecCount" type="text" class="form-control" />
+            </div>
+            <label class="col-sm-2 control-label ">已执行次数</label>
+            <div class="col-sm-4">
+                <input id="execedCount" col="ExecedCount" type="text" class="form-control" readonly="readonly" />
+            </div>
+        </div>
+      
+       @* <div class="form-group">
+            <label class="col-sm-3 control-label ">设备部署模式</label>
+            <div class="col-sm-8" id="deviceDeployMode" col="DeviceDeployMode">
+               
+            </div>
+        </div>*@
+        @*<div class="form-group">
+            <label class="col-sm-3 control-label ">最大并行设备数</label>
+            <div class="col-sm-6">
+                <input id="maxDeviceCount" col="MaxDeviceCount" type="text" class="form-control" />
+            </div>
+        </div>*@
+      
+@*        <div class="form-group">
+            <label class="col-sm-3 control-label ">已存在执行中任务时</label>
+            <div class="col-sm-8" id="multipleInstances" col="MultipleInstances">
+               
+            </div>
+        </div>*@
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">并行执行@(GlobalContext.SystemConfig.CaseName)</label>
+            <div class="col-sm-4" id="isParallelMode" col="IsParallelMode">
+                @*<input id="isParallelMode" col="IsParallelMode" type="text" class="form-control" />*@
+               @* <div class="col-sm-6" id="isParallelMode" col="IsParallelMode"></div>*@
+            </div>
+            <label class="col-sm-2 control-label ">出错后停止</label>
+            <div class="col-sm-4" id="stopWhenError" col="StopWhenError">
+                @*<input id="isContinueWhenError" col="IsContinueWhenError" type="text" class="form-control" />*@
+                @*<div class="col-sm-6" id="stopWhenError" col="StopWhenError"></div>*@
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">推送模式</label>
+            <div class="col-sm-4" id="consumeMode" col="ConsumeMode">
+                @*<input id="isParallelMode" col="IsParallelMode" type="text" class="form-control" />*@
+                @* <div class="col-sm-6" id="isParallelMode" col="IsParallelMode"></div>*@
+            </div>
+            <label class="col-sm-2 control-label" id="consumerLabel">选择客户端(组)</label>
+            <div class="col-sm-4" id="consumerDiv">
+                <input id="consumerId" col="ConsumerId" type="hidden" class="form-control" />
+                
+                <input id="consumerName" col="ConsumerDisplayName" type="text" class="form-control" readonly="readonly" onclick="openSelectConsumerPage()" />
+
+                @*<input id="isContinueWhenError" col="IsContinueWhenError" type="text" class="form-control" />*@
+                @*<div class="col-sm-6" id="stopWhenError" col="StopWhenError"></div>*@
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">备注</label>
+            <div class="col-sm-10">
+                <textarea id="remark" col="Remark" class="form-control" style="height:60px"></textarea>
+            </div>
+        </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label ">启用状态</label>
+                <div class="col-sm-10" id="isEnable" col="IsEnable">
+                    @*<input id="isEnable" col="IsEnable" type="text" class="form-control" />*@
+                </div>
+            </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    var id = ys.request("id");
+
+    var cron_field=null;
+
+    var $s = null;
+    var cronSelector=null;
+
+    $(function () {
+        initEnvList();
+
+        laydate.render({ elem: '#fromTime', type: 'datetime', format: 'yyyy-MM-dd HH:mm:ss' });
+        laydate.render({ elem: '#toTime', type: 'datetime', format: 'yyyy-MM-dd HH:mm:ss' });
+
+        //$("#isTemp").ysRadioBox({ data: ys.getJson(@Html.Raw(typeof(IsEnum).EnumToDictionaryString())), default: '0' });
+        $("#isParallelMode").ysRadioBox({ data: ys.getJson(@Html.Raw(typeof(IsEnum).EnumToDictionaryString())), default: '0' });
+        $("#stopWhenError").ysRadioBox({ data: ys.getJson(@Html.Raw(typeof(IsEnum).EnumToDictionaryString())), default: '1' });
+        $("#consumeMode").ysRadioBox({ data: ys.getJson(@Html.Raw(typeof(TaskConsumeModeEnumType).EnumToDictionaryString())), default: '0' });
+
+        //$("#deviceDeployMode").ysRadioBox({ data: ys.getJson(@Html.Raw(typeof(DeviceDeployModeEnumType).EnumToDictionaryString())), default: '2' });
+        //$("#multipleInstances").ysRadioBox({ data: ys.getJson(@Html.Raw(typeof(TaskInstancesPolicy).EnumToDictionaryString())), default: '1' });
+
+        $("#isEnable").ysRadioBox({ data: ys.getJson(@Html.Raw(typeof(StatusEnum).EnumToDictionaryString())), default: '1' });
+
+        //$s = $('#Schedule');
+        //$s.jsCronUI({
+        //    bindTo: $("#cronExpression"),
+        //});
+
+           cronSelector = $.cronSelector({
+                                container:'#cronSelector',
+                                locatedWeek:true
+                            });
+
+        cronSelector.onChange(function () {
+            var v = cronSelector.val();
+            console.log(v);
+            $('#cronExpression').val(v);
+        });
+        registerConsumeModeCallback();
+
+        //cron = $('.js-cron');
+        //var template = $('.js-cron .js-cron-template');
+        //var settings = {
+        //    container: template
+        //};
+        //cron.jsCronUI(settings);
+
+      //cron_field =  $('#example1-cron').cron({
+            
+      //      onChange: function () {
+      //          $('#cronExpression').val($(this).cron("value"));
+      //      }
+      //  });
+
+        //$('#example1-cron').cronBuilder({
+        //    selectorLabel: "选择时间段:  ",
+            
+        //    onChange: function (expression) {
+        //        $('#cronExpression').val(expression);
+        //    }
+        //});
+
+        getForm();
+
+        $.validator.addMethod("consumerId", function (value, element, params) {
+            var mode = $('#consumeMode').ysRadioBox("getValue");
+            console.log(mode);
+
+            if(mode==1|| mode==2)
+            {
+                var consumerId =$('#consumerId').val();
+                console.log(consumerId);
+                if (ys.isNullOrEmpty(consumerId) || consumerId==0) {
+                    console.log(false);
+
+                    return false;
+                }
+                console.log(true);
+                return true;
+            }
+            return true;
+
+        }, "*请选择客户端(组)");
+
+        $('#form').validate({
+            rules: {
+
+                name: { required: true }
+                , envId_select: { required: true }
+                , maxExecCount: {
+                    digits: true
+                }
+                , execedCount: {
+                    digits: true
+                }
+                , consumerName: {
+                    consumerId: ""
+                }
+            }
+        });
+    });
+    function initEnvList() {
+        //选择执行环境
+        $("#envId").ysComboBox({
+            url: '@Url.Content("~/TestCaseManager/ExecEnvironment/GetListJson")',
+            key: "Id",
+            value: "Name",
+            class: "form-control",
+            //multiple: true
+        });
+    }
+    function getForm() {
+        if (id > 0) {
+            ys.ajax({
+                url: '@Url.Content("~/TestTaskManager/TestTask/GetFormJson")' + '?id=' + id,
+                type: 'get',
+                success: function (obj) {
+                    if (obj.Status) {
+                        $('#form').setWebControls(obj.Result);
+                        $('#envId_select').attr({ 'disabled': 'disabled', 'readonly': 'readonly' });
+
+                        var val = obj.Result.ConsumeMode;
+
+                        if (val == 1 || val == 2) {
+                            $('#consumerLabel').removeClass('collapse');
+                            $('#consumerDiv').removeClass('collapse');
+                        }
+                        else {
+                            $('#consumerLabel').addClass('collapse');
+                            $('#consumerDiv').addClass('collapse');
+                        }
+
+                        console.log(obj.Result);
+                        try {
+                            cronSelector.parseVal(obj.Result.CronExpression);
+                            console.log("cronSelector.parseVal end");
+                        }
+                        catch(error) {
+                            console.log(error, obj.Result.CronExpression);
+                        }
+
+
+                        // cron_field.cron("value", obj.Result.CronExpression);
+                        //cron.setCron(obj.Result.CronExpression);
+                        //$s.jsCronUI('setCron', obj.Result.CronExpression)
+                    }
+                }
+            });
+        }
+        else {
+            var defaultData = {};
+            $('#form').setWebControls(defaultData);
+        }
+    }
+
+    function saveForm(index) {
+        if ($('#form').validate().form()) {
+            var postData = $('#form').getWebControls({ Id: id });
+            if (ys.isNullOrEmpty(postData.ToTime)) {
+                //postData.ToTime = "9999-12-31 00:00:00";
+            }
+            ys.ajax({
+                url: '@Url.Content("~/TestTaskManager/TestTask/SaveFormJson")',
+                type: 'post',
+                data: postData,
+                success: function (obj) {
+                    if (obj.Status) {
+                        ys.msgSuccess(obj.Message);
+                        parent.searchGrid();
+                        parent.layer.close(index);
+                    }
+                    else {
+                        ys.msgError(obj.Message);
+                    }
+                }
+            });
+        }
+    }
+        //openSelectConsumerPage
+    //打开用例选择对话框
+
+    function registerConsumeModeCallback()
+    { 
+      
+        $('input[type=radio][name=consumeMode_radiobox]').each(function (i,ele) {
+            $(ele).on('ifChecked', function (event) {
+                $('#consumerId').val(0);
+                $('#consumerName').val('');
+
+                var val = $(this).val();
+                if (val == 1 || val == 2) {
+                    $('#consumerLabel').removeClass('collapse');
+                    $('#consumerDiv').removeClass('collapse');
+                }
+                else
+                {
+                    $('#consumerLabel').addClass('collapse');
+                    $('#consumerDiv').addClass('collapse');
+                }
+
+            });
+         });
+
+
+    }
+    function openSelectConsumerPage() {
+        var consumeMode = $('#consumeMode').ysRadioBox("getValue");
+
+        ys.openDialog({
+            title: consumeMode === '1' ? '选择客户端' : '选择客户端组',
+            content: '@Url.Content("~/TestTaskManager/TestTask/SelectConsumerIndex")' + '?consumeMode=' + consumeMode,
+            moveOut: true,
+            maxWidth: true,
+
+            shadeClose: true,
+            callback: function (index, layero) {
+                var childFrame = parent.window[layero.find('iframe')[0]['name']];
+                if (childFrame.verifySave()) {
+                    var consumerId = $(childFrame.document.body).find('#consumerId').val();
+                    var consumerName = $(childFrame.document.body).find('#consumerName').val();
+                
+                    if (ys.isNullOrEmpty(consumerId)) {
+                        layer.close(index);
+                    }
+                    else {
+                        $("#consumerId").val(consumerId);
+                        $("#consumerName").val(consumerName);
+                       
+                        parent.layer.close(index);
+                        console.log(index);
+                    }
+                }
+
+
+            }
+        });
+    }
+</script>
+

@@ -1,0 +1,115 @@
+﻿@{
+    Layout = "~/Views/Shared/_Index.cshtml";
+ }
+<div class="container-div">
+    <div class="row">
+        <div id="searchDiv" class="col-sm-12">
+            <div class="select-list">
+                <ul>
+                    <li>
+                        TenantId：<input id="tenantId" col="TenantId" type="text" />
+                    </li>
+                    <li>
+                        <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+       @* <div class="btn-group-sm hidden-xs" id="toolbar">
+            <a id="btnAdd" class="btn btn-success" onclick="showSaveForm(true)"><i class="fa fa-plus"></i> 新增</a>
+            <a id="btnEdit" class="btn btn-primary disabled" onclick="showSaveForm(false)"><i class="fa fa-edit"></i> 修改</a>
+            <a id="btnDelete" class="btn btn-danger disabled" onclick="deleteForm()"><i class="fa fa-remove"></i> 删除</a>
+        </div>*@
+        <div class="col-sm-12 select-table table-striped">
+            <table id="gridTable" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var taskId = ys.request('taskId');
+
+    $(function () {
+        console.log('taskId:'+taskId);
+        initGrid();
+    });
+
+    function initGrid() {
+        var queryUrl = '@Url.Content("~/TestTaskManager/TestTask/GetDeviceListJson")' + '?taskId=' + taskId;
+        $('#gridTable').ysTable({
+            url: queryUrl,
+            columns: [
+                { checkbox: true, visible: true },
+                { field: 'Id', title: 'Id', visible: false },
+                { field: 'UId', title: 'Id', visible: false },
+                { field: 'Guid', title: 'Id', visible: false },
+                { field: 'UserId', title: 'Id', visible: false },
+                { field: 'Name', title: '设备名称' },
+                { field: 'IP', title: 'IP地址' },
+                { field: 'MAC', title: 'MAC地址' },
+                { field: 'LoginName', title: '设备登录名' },
+
+                { field: 'UserName', title: '客户端用户名' },
+                { field: 'ClientVersion', title: '客户端版本' },
+                { field: 'UserLoginTime', title: '客户端登录时间' },
+                { field: 'LastActiveTime', title: '最近活动时间' },
+            ],
+            queryParams: function (params) {
+                var pagination = $('#gridTable').ysTable('getPagination', params);
+                var queryString = $('#searchDiv').getWebControls(pagination);
+                return queryString;
+            },
+            onLoadSuccess: function (obj) {
+                if (obj) {
+                    if (!obj.Status) {
+                        ys.alertError(obj.Message);
+                    }
+                    else {
+                        for(var i=0;i<obj.Result.length;i++) {
+                            if(obj.Result[i].IsDeployed)
+                            {
+                                $('#gridTable').bootstrapTable('check', i);
+                            }
+                            
+                        }
+                    }
+                }
+            },
+        });
+    }
+
+    function searchGrid() {
+        $('#gridTable').ysTable('search');
+        resetToolbarStatus();
+    }
+
+
+    function saveForm(index) {
+        var selectedRow = $('#gridTable').bootstrapTable('getSelections');
+        if (selectedRow.length==0)
+        {
+            return;
+        }
+        
+        console.log(selectedRow);
+
+        var saveUrl = '@Url.Content("~/TestTaskManager/TestTask/SaveDeployListForm")' + '?taskId=' + taskId;
+
+        var postData = selectedRow;
+        ys.ajax({
+            url: saveUrl,
+            type: 'post',
+            data: { deviceList: postData },
+            success: function (obj) {
+                if (obj.Status) {
+                    ys.msgSuccess(obj.Message);
+                    parent.searchGrid();
+                    parent.layer.close(index);
+                }
+                else {
+                    ys.msgError(obj.Message);
+                }
+            }
+        });
+    }
+</script>

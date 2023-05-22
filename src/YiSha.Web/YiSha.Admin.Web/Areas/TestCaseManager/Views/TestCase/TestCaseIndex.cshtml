@@ -1,0 +1,367 @@
+﻿@{
+    Layout = "~/Views/Shared/_Index.cshtml";
+ }
+ @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostingEnvironment
+@section header{
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/zTree/v3/css/metroStyle/metroStyle.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/zTree/v3/js/ztree.min.js"))
+
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/jquery.layout/1.4.4/jquery.layout-latest.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/jquery.layout/1.4.4/jquery.layout-latest.min.js"))
+
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/bootstrap.treetable/1.0/bootstrap-treetable.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/bootstrap.treetable/1.0/bootstrap-treetable.min.js"))
+}
+
+    <div class="ui-layout-west">
+        <div class="main-content">
+            <div class="box box-main">
+                <div class="box-header">
+                    <div class="box-title">
+                        产品模块分类
+                    </div>
+                    <div class="box-tools pull-right">
+                        @* <a type="button" class="btn btn-box-tool menuItem" href="#" onclick="showDepartmentForm()" title="管理部门"><i class="fa fa-edit"></i></a>
+                    <button type="button" class="btn btn-box-tool" id="btnExpand" title="展开" style="display:none;"><i class="fa fa-chevron-up"></i></button>
+                    <button type="button" class="btn btn-box-tool" id="btnCollapse" title="折叠"><i class="fa fa-chevron-down"></i></button>*@
+                        @*<button type="button" class="btn btn-box-tool" id="btnRefresh" title="刷新"><i class="fa fa-refresh"></i></button>*@
+                    </div>
+                </div>
+                <div class="ui-layout-content">
+                    <div id="productTree" class="ztree"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container-div  ui-layout-center">
+    <div class="row">
+        <div id="searchDiv" class="col-sm-12 search-collapse">
+                <input type="hidden" id="productId" col="ProductId">
+                <input type="hidden" id="cateId" col="CateId">
+                @*<input type="hidden" id="projectGuid" col="ProjectGuid">*@
+
+            <div class="select-list">
+                <ul>
+                    <li>
+                        @(GlobalContext.SystemConfig.CaseName)编码：<input id="code" col="Code" type="text" />
+                    </li>
+                    <li>
+                        @(GlobalContext.SystemConfig.CaseName)名称：<input id="name" col="Name" type="text" />
+                    </li>
+                    <li>
+                        模板编码：<input id="projectGuid" col="ProjectGuid" type="text" />
+                    </li>
+                    <li>
+                        模板名称：<input id="projectName" col="ProjectName" type="text" />
+                    </li>
+                    <li>
+                        <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="btn-group-sm hidden-xs" id="toolbar">
+            <a id="btnAdd" class="btn btn-success" onclick="showSaveForm(true)"><i class="fa fa-plus"></i> 新增</a>
+            <a id="btnEdit" class="btn btn-primary disabled" onclick="showSaveForm(false)"><i class="fa fa-edit"></i> 修改</a>
+            <a  class="btn btn-primary" onclick="upgradeVersion()"><i class="fa fa-edit"></i>更改版本</a>
+            <a id="btnDelete" class="btn btn-danger disabled" onclick="deleteForm()"><i class="fa fa-remove"></i> 删除</a>
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="gridTable" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+        $(function () {
+            initProjectTreeGrid();
+            initGrid();
+            $('body').layout({ west__size: 185 });
+        });
+
+
+        function initProjectTreeGrid() {
+            $('#productTree').ysTree({
+                url: '@Url.Content("~/ProductCategoryManager/ModuleCategory/GetAllModuleCategoryTreeListJson")',
+                async: true,
+                expandLevel: 2,
+                maxHeight: "100%",
+                callback: {
+                    onClick: function (event, treeId, treeNode) {
+                        $("#productId").val("");
+                        $("#cateId").val("");
+                        //$("#projectGuid").val("");
+
+                        //查找根结点
+                        var rootNode = treeNode;
+                        var parentNode = treeNode;
+                        while (parentNode != null) {
+                            parentNode = parentNode.getParentNode();
+                            if (parentNode != null) {
+                                rootNode = parentNode;
+                            }
+                        }
+
+                        //根节点为产品
+                        $("#productId").val(rootNode.id);
+
+                        //当前选中的是功能模块节点
+                        if (treeNode.nodeType=="module")
+                        {
+                            $("#cateId").val(treeNode.id);
+                        }
+
+                        //当前选中的是用例模板
+                        //if (treeNode.nodeType == "project") {
+                        //    var cateNode = treeNode.getParentNode();
+                        //    $("#cateId").val(cateNode.id);
+                        //    $("#projectGuid").val(treeNode.id);
+                        //}
+
+                        searchGrid();
+                    }
+                }
+            });
+        }
+
+    function initGrid() {
+        var queryUrl = '@Url.Content("~/TestCaseManager/TestCase/GetPageListJson")';
+        $('#gridTable').ysTable({
+            url: queryUrl,
+                columns: [
+                    { checkbox: true, visible: true },
+                    { field: 'Id', title: 'Id', visible: false },
+
+
+                { field: 'Code', title: '@(GlobalContext.SystemConfig.CaseName)编码' },
+                { field: 'Name', title: '@(GlobalContext.SystemConfig.CaseName)名称' },
+               
+                {
+                    field: 'Priority', title: '优先级', width: '40px', formatter: function (value, row, index) {
+                        if (row.Priority == "@CasePriorityEnumType.A.ParseToInt()") {
+                            return '' + "@CasePriorityEnumType.A.GetDescription()" + '';
+                        } else if (row.Priority == "@CasePriorityEnumType.B.ParseToInt()") {
+                            return '' + "@CasePriorityEnumType.B.GetDescription()" + '';
+                        }
+                        else if (row.Priority == "@CasePriorityEnumType.C.ParseToInt()") {
+                            return '' + "@CasePriorityEnumType.C.GetDescription()" + '';
+                        }
+                        else if (row.Priority == "@CasePriorityEnumType.D.ParseToInt()") {
+                            return '' + "@CasePriorityEnumType.D.GetDescription()" + '';
+                        }
+                        else if (row.Priority == "@CasePriorityEnumType.E.ParseToInt()") {
+                            return '' + "@CasePriorityEnumType.E.GetDescription()" + '';
+                        }
+                    }
+                },
+                { field: 'EnvDisplayName', title: '执行环境', width: '100px' },
+                { field: 'AssertionCount', title: '断言数', width: '40px' },
+                {
+                    field: 'SupportParallel', title: '可并行', width: '40px', formatter: function (value, row, index) {
+                        if (row.SupportParallel == "@IsEnum.Yes.ParseToInt()") {
+                            return '' + "@IsEnum.Yes.GetDescription()" + '';
+                        } else {
+                            return '' + "@IsEnum.No.GetDescription()" + '';
+                        }
+                    }
+                },
+                { field: 'ProjectName', title: '模板名称' },
+                { field: 'ProjectGuid', title: '模板编码', width: '120px', visible: false },
+                { field: 'SpecialVersion', title: '模板版本', width: '80px' },
+                { field: 'CreatorUserName', title: '创建人', width: '40px', visible: false },
+                {
+                    field: 'BaseCreateTime', title: '创建时间', width: '135px', formatter: function (value, row, index) {
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+                    //{ field: 'UsingVersionDisplayName', title: '版本类型' },
+                    {
+                        field: 'IsEnable', title: '状态',width:'40px', formatter: function (value, row, index) {
+                            if (row.IsEnable == "@StatusEnum.Yes.ParseToInt()") {
+                                return '<span class="badge badge-primary">' + "@StatusEnum.Yes.GetDescription()" + '</span>';
+                            } else {
+                                return '<span class="badge badge-warning">' + "@StatusEnum.No.GetDescription()" + '</span>';
+                            }
+                        }
+                    },
+
+                    {
+                        title: '操作',
+                        align: 'center',
+                        width:'40px',
+                        formatter: function (value, row, index) {
+                            var actions = [];
+                            actions.push('<a class="btn btn-primary btn-xs" href="#" onclick="openVarConfigDialog(\'' + row.Id + '\', \'' + row.ProjectGuid + '\', \'' + row.UsingVersion + '\', \'' + row.SpecialVersion + '\')" ><i class="fa fa-pause-circle-o"></i>变量</a> ');
+                            //if (row.JobStatus == "@StatusEnum.Yes.ParseToInt()") {
+                            //    actions.push('<a class="btn btn-primary btn-xs" href="#" onclick="ChangeJobStatus(\'' + row.Id + '\',@StatusEnum.No.ParseToInt())"><i class="fa fa-pause-circle-o"></i>暂停</a> ');
+                            //} else {
+                            //    actions.push('<a class="btn btn-primary btn-xs" href="#" onclick="ChangeJobStatus(\'' + row.Id + '\',@StatusEnum.Yes.ParseToInt())"><i class="fa fa-play-circle-o"></i>执行</a> ');
+                            //}
+                            return actions.join('');
+                        }
+                    }
+                ],
+            queryParams: function (params) {
+                var pagination = $('#gridTable').ysTable('getPagination', params);
+                var queryString = $('#searchDiv').getWebControls(pagination);
+                return queryString;
+            }
+        });
+    }
+
+    function searchGrid() {
+        $('#gridTable').ysTable('search');
+        resetToolbarStatus();
+    }
+
+    function showSaveForm(bAdd) {
+            var productId = $("#productId").val();
+            var cateId = $("#cateId").val();
+            //var projectGuid = $("#projectGuid").val();
+
+            //if (ys.isNullOrEmpty(productId) || ys.isNullOrEmpty(cateId) || ys.isNullOrEmpty(projectGuid)) {
+            //    ys.msgError("请先选择用例模板");
+            //    return;
+            //}
+
+        var id = 0;
+        if (!bAdd) {
+            var selectedRow = $('#gridTable').bootstrapTable('getSelections');
+            if (!ys.checkRowEdit(selectedRow)) {
+                return;
+            }
+            else {
+                id = selectedRow[0].Id;
+            }
+        }
+        ys.openDialog({
+            title: id > 0 ? '编辑@(GlobalContext.SystemConfig.CaseName)' : '添加@(GlobalContext.SystemConfig.CaseName)',
+            content: '@Url.Content("~/TestCaseManager/TestCase/TestCaseForm")' + '?id=' + id + '&productId=' + productId + '&cateId=' + cateId,
+            height:'620px',
+            callback: function (index, layero) {
+                var iframeWin = window[layero.find('iframe')[0]['name']];
+                iframeWin.saveForm(index);
+            }
+        });
+    }
+
+    function deleteForm() {
+        var selectedRow = $('#gridTable').bootstrapTable('getSelections');
+        if (ys.checkRowDelete(selectedRow)) {
+            ys.confirm('确认要删除选中的' + selectedRow.length + '条数据吗？', function () {
+                var ids = ys.getIds(selectedRow);
+                ys.ajax({
+                    url: '@Url.Content("~/TestCaseManager/TestCase/DeleteFormJson")' + '?ids=' + ids,
+                    type: 'post',
+                    success: function (obj) {
+                        if (obj.Status) {
+                            ys.msgSuccess(obj.Message);
+                            searchGrid();
+                        }
+                        else {
+                            ys.msgError(obj.Message);
+                        }
+                    }
+                });
+            });
+        }
+    }
+      
+    function openVarConfigDialog(testCaseId, projectGuid, usingVersion, specialVersion) {
+            ys.openDialog({
+            title: '编辑@(GlobalContext.SystemConfig.CaseName)变量',
+                content: '@Url.Content("~/TestCaseManager/TestCase/TestCaseVarConfigForm")' + '?testCaseId=' + testCaseId + '&projectGuid=' + projectGuid+ '&usingVersion=' + usingVersion + '&specialVersion=' + specialVersion,
+                width: '1050px',
+                height: '750px',
+                callback: function (index, layero) {
+                    var iframeWin = window[layero.find('iframe')[0]['name']];
+                    iframeWin.saveForm(index);
+                }
+            });
+        }
+
+    function upgradeVersion() {
+        var selectedRow = $('#gridTable').bootstrapTable('getSelections');
+        if(selectedRow.length==0)
+        {
+            return;
+        }
+        var projectGuid = selectedRow[0].ProjectGuid;
+
+        for (var i = 1; i < selectedRow.length;i++)
+        {
+            if (selectedRow[i].ProjectGuid!=projectGuid)
+            {
+                ys.msgError("请选择相同的模板来升级");
+                return;
+            }
+        }
+
+        ys.confirm('确认要升级选中的' + selectedRow.length + '条数据吗？', function () {
+
+            var productId = selectedRow[0].ProductId;
+            var cateId = 0;//同一个模板创建的用例可能处于不同的分类中
+
+            ys.openDialog({
+                title: "选择@(GlobalContext.SystemConfig.CaseName)模板",
+                content: '@Url.Content("~/ProjectManager/PublishedProject/ChooseProject")' + '?productId=' + productId + '&cateId=' + cateId + '&projectGuid=' + projectGuid + '&upgrade=1',
+
+                shadeClose: true,
+                callback: function (index, layero) {
+                    
+                    var childFrame = window[layero.find('iframe')[0]['name']];
+
+                    if (childFrame.verifySave())
+                    {
+
+                        var projectId = $(childFrame.document.body).find('#projectId').val();
+                        var projectName = $(childFrame.document.body).find('#projectName').val();
+                        var newProjectGuid = $(childFrame.document.body).find('#projectGuid2').val();
+                        var newProjectVersion = $(childFrame.document.body).find('#projectVersion').val();
+
+                        //specialVersion
+                        //$("#projectGuid").val(projectGuid);
+                        //$("#projectName").val(projectName);
+                        //$("#specialVersion").val(newProjectVersion);
+                        //$("#cateId").val(cateId);
+                        //$("#cateName").val(cateName);
+
+                        //$("#ProductCateFullName").val(productName + "->" + cateName);
+
+                        //ProductCateFullName
+                        if (ys.isNullOrEmpty(newProjectVersion)) {
+                            //layer.close(index);
+                        }
+                        else if (newProjectGuid != projectGuid) {
+                            layer.close(index);
+                            ys.msgError('选择的模板和当前正在使用的模板不一样');
+                        }
+                        else {
+                            layer.close(index);
+
+                            var ids = ys.getIds(selectedRow);
+                            ys.ajax({
+                                url: '@Url.Content("~/TestCaseManager/TestCase/UpgradeVersionJson")' + '?ids=' + ids + '&projectVersion=' + newProjectVersion,
+                                type: 'post',
+                                success: function (obj) {
+                                    if (obj.Status) {
+                                        ys.msgSuccess(obj.Message);
+                                        searchGrid();
+                                    }
+                                    else {
+                                        ys.msgError(obj.Message);
+                                    }
+                                }
+                            });
+                        }
+                    }
+
+                }
+            });
+
+           
+        });
+    }
+</script>

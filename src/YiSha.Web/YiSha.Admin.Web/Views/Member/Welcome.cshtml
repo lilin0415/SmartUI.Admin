@@ -1,0 +1,653 @@
+﻿@using YiSha.Enum;
+@using YiSha.Util.Extension;
+@using YiSha.Util.Model;
+@{
+    Layout = "~/Views/Shared/_Index.cshtml";
+}
+<style type="text/css">
+    span.sec_icon {
+        height: 50px;
+        width: 50px;
+        font-size: 26px;
+        display: inline-block;
+        text-align: center;
+        line-height: 50px;
+        border-radius: 100px;
+       
+    }
+
+    .sec_icon.default {
+        border: 1px solid #36a2f5;
+        color: #36a2f5;
+     
+    }
+    .sec_icon.red{
+        background-color: #e74c3c !important;
+        color:white;
+    }
+
+    .sec_icon.blue {
+        background-color: #3498db !important;
+        color: white;
+    }
+     .sec_icon.green {
+        background-color: #2ecc71 !important;
+        color: white;
+    }
+
+    .sec_icon.yellow {
+        background-color: #f1c40f !important;
+        color: white;
+    }
+    .numberBox{
+        padding: 18px 20px;
+    }
+    .bigTitle{
+        font-size: 18px;
+        color: #999999;
+        font-weight: 400;
+        margin-bottom: 9px;
+    }
+    .bigNumberBox
+    {
+        float: right;
+    }
+    .bigValue {
+        font-size: 22px;
+        color: #2e2e3a;
+        font-weight: 500;
+    }
+    .seperatorLine{
+        border-bottom: 1px solid #f2f2f2;
+        margin: 12px 0px;
+    }
+    .smallNumberBox{}
+    .smallTitle{
+        /*padding-top: 15px;*/
+        font-size: 14px;
+        color: #999999;
+     /*   border-top: 1px solid #f2f2f2;
+        margin-top: 20px;
+        margin-bottom: 0px;
+        display: inline-block;
+        width: 100%;*/
+    }
+    .smallValue{
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        color: #22af47 !important;
+    }
+    #caseExecSearchDiv  .fixed-table-toolbar
+    {
+        display:none;
+    }
+</style>
+<div class="wrapper wrapper-content">
+    <div class="col-sm-12">
+        <div class="row">
+
+            <div class="col-xs-3">
+                <div class="panel panel-default">
+                    @* <div class="panel-heading">
+                    默认面板
+                    </div>*@
+                    <div class="panel-body numberBox" id="caseExecStats">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <span class="sec_icon red"><i class="fa" aria-hidden="true">作</i></span>
+                                <div class="bigNumberBox">
+                                    <div class="bigTitle">作业数量</div>
+                                    <div class="bigValue" col="Total">0</div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row  seperatorLine" ></div>
+
+                        <div class="row">
+                              <div class="col-xs-4">
+                                <div class="smallNumberBox">
+                                    <div class="smallTitle">今天</div>
+                                    <div class="smallValue">+<span col="IncreasedToday">0</span></div>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="smallNumberBox">
+                                    <div class="smallTitle">昨天</div>
+                                    <div class="smallValue">+<span col="IncreasedYesterday">0</span></div>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="smallNumberBox">
+                                    <div class="smallTitle">本周</div>
+                                    <div class="smallValue">+<span col="IncreasedThisWeek">0</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+              <div class="col-xs-3">
+                <div class="panel panel-default">
+                    @* <div class="panel-heading">
+                    默认面板
+                    </div>*@
+                    <div class="panel-body numberBox" id="taskExecStats">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <span class="sec_icon blue"><i class="fa" aria-hidden="true">任</i></span>
+                                <div class="bigNumberBox">
+                                    <div class="bigTitle">任务数量</div>
+                                    <div class="bigValue" col="Total">0</div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row  seperatorLine" ></div>
+
+                        <div class="row">
+                             <div class="col-xs-4">
+                                <div class="smallNumberBox">
+                                    <div class="smallTitle">今天</div>
+                                    <div class="smallValue">+<span col="IncreasedToday">0</span></div>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="smallNumberBox">
+                                    <div class="smallTitle">昨天</div>
+                                    <div class="smallValue">+<span col="IncreasedYesterday">0</span></div>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="smallNumberBox">
+                                    <div class="smallTitle">本周</div>
+                                    <div class="smallValue">+<span col="IncreasedThisWeek">0</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+              <div class="col-xs-3">
+                <div class="panel panel-default">
+                    @* <div class="panel-heading">
+                    默认面板
+                    </div>*@
+                    <div class="panel-body numberBox" id="testTaskStats">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <span class="sec_icon green"><i class="fa" aria-hidden="true">计</i></span>
+                                <div class="bigNumberBox">
+                                    <div class="bigTitle">计划数量</div>
+                                    <div class="bigValue" col="Total">0</div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row  seperatorLine" ></div>
+
+                        <div class="row">
+                             <div class="col-xs-4">
+                                <div class="smallNumberBox">
+                                    <div class="smallTitle">今天</div>
+                                    <div class="smallValue">+<span col="IncreasedToday">0</span></div>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="smallNumberBox">
+                                    <div class="smallTitle">昨天</div>
+                                    <div class="smallValue">+<span col="IncreasedYesterday">0</span></div>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="smallNumberBox">
+                                    <div class="smallTitle">本周</div>
+                                    <div class="smallValue">+<span col="IncreasedThisWeek">0</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-xs-3">
+                <div class="panel panel-default">
+                    @* <div class="panel-heading">
+                    默认面板
+                    </div>*@
+                    <div class="panel-body numberBox" id="testCaseStats">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <span class="sec_icon yellow"><i class="fa" aria-hidden="true">用</i></span>
+                                <div class="bigNumberBox">
+                                    <div class="bigTitle">用例数量</div>
+                                    <div class="bigValue" col="Total">0</div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row  seperatorLine"></div>
+
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <div class="smallNumberBox">
+                                    <div class="smallTitle">今天</div>
+                                    <div class="smallValue">+<span col="IncreasedToday">0</span></div>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="smallNumberBox">
+                                    <div class="smallTitle">昨天</div>
+                                    <div class="smallValue">+<span col="IncreasedYesterday">0</span></div>
+                                </div>
+                            </div>
+                            <div class="col-xs-4">
+                                <div class="smallNumberBox">
+                                    <div class="smallTitle">本周</div>
+                                    <div class="smallValue">+<span col="IncreasedThisWeek">0</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        
+          
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>排队&运行中作业</h5>
+                       
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row">
+                            <div id="caseExecSearchDiv"></div>
+                            <div class="col-sm-12">
+                                <table id="caseExecGridTable" data-mobile-responsive="true"></table>
+                            </div>
+                          
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @* <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+            <div class="ibox-title">
+            <h5>技术选型</h5>
+            <div class="ibox-tools">
+            <a class="collapse-link">
+            <i class="fa fa-chevron-up"></i>
+            </a>
+            <a class="close-link"><i class="fa fa-times"></i></a>
+            </div>
+            </div>
+            <div class="ibox-content" style="font-size:14px">
+            <ul>
+            <li>1. 前端： Bootstrap 3.3.7</li>
+            <li>2. 核心框架：.Net Core MVC</li>
+            <li>3. 缓存层：Memory、Redis</li>
+            <li>4. 持久层框架：Entity Framework Core</li>
+            <li>5. 数据库支持：SqlServer,MySql,Oracle</li>
+            <li>6. 定时任务：Quartz.Net</li>
+            </ul>
+            </div>
+            </div>
+            </div>*@
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>关于@(SystemConfig.ProductName)</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                            <a class="close-link">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row">
+                            <div class="col-sm-12" style="font-size:14px">
+                                <p style="text-indent: 2em;">
+                                    @SystemConfig.ProductName 是一款功能强大、简单易用、0编程的自动化测试系统，并提供在开发、集成、部署、运行和维护过程中一整套专业的自动化测试解决方案。<br />
+                                    
+                                    
+                                </p>
+                                <p style="text-indent: 2em;">
+                                    它借鉴了市场上主流的自动化软件的优点，采用设计器、执行器和控制器“三合一”的架构模式。提供包括脚本录制、开发、编写、调试；测试用例与测试计划的制定、执行；用例运行结果及日志的汇总、分析，自动生成各种维度的测试报告等功能。
+                                    帮助企业解决日常测试管理过程中遇到的资产管理、测试效率、测试质量的问题，降低企业研发成本，提高产品质量，助力企业实现数字化、智能化升级转型。
+
+                                </p>
+                             
+                                <p>当前版本：@YiSha.Util.GlobalContext.GetVersion() &nbsp;&nbsp;</p>
+                                <p></p>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>联系我们</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                            <a class="close-link"><i class="fa fa-times"></i></a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        @*<p>
+                        <i class="fa fa-send-o"></i> 官网：<a href="#" target="_blank"></a>
+                        </p>*@
+                        <p>
+                            <i class="fa"></i> 电话(微)：<span> 18101058601</span>
+                        </p>
+                       
+                        <p>
+                            <i class="fa"></i> QQ群：<span> 312769914</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+          
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <div id="copyright" class=" justify-content-center center-block text-center">
+                    <script type="text/javascript">
+                        $(function () {
+
+
+                            var copyright = new Date();//取得当前的日期
+                            update = copyright.getFullYear();//取得当前的年份
+
+                            var h = "Copyright © 2022-" + update + ' <a href="@SystemConfig.CompayUrl" target="_blank">@SystemConfig.CompayName</a> All rights reserved. ';
+
+                            $('#copyright').html(h);
+                        });
+
+
+                    </script>
+                </div>
+            </div>
+           
+        </div>
+    </div>
+     
+</div>
+
+
+<script>
+    $(function () {
+
+        $(".modal").appendTo("body"), $("[data-toggle=popover]").popover(), $(".collapse-link").click(function () {
+            var div_ibox = $(this).closest("div.ibox"),
+                e = $(this).find("i"),
+                i = div_ibox.find("div.ibox-content");
+            i.slideToggle(200),
+                e.toggleClass("fa-chevron-up").toggleClass("fa-chevron-down"),
+                div_ibox.toggleClass("").toggleClass("border-bottom"),
+                setTimeout(function () {
+                    div_ibox.resize();
+                }, 50);
+        }), $(".close-link").click(function () {
+            var div_ibox = $(this).closest("div.ibox");
+            div_ibox.remove()
+        });
+
+        $('#pay-qrcode').click(function () {
+            var html = $(this).html();
+            ys.openDialogContent({
+                content: html,
+                width: '600px',
+                height: '321px'
+            });
+        });
+
+        getStatsData();
+
+        initCaseExecGrid();
+    });
+
+    function getStatsData()
+    {
+        ys.ajax({
+            url: '@Url.Content("~/Stats/GetProjectStatsJson")',
+            type: "get",
+            success: function (obj) {
+                if (obj.Status) {
+                    var result = obj.Result;
+                    $("#projectStats").setWebControls(result);
+                 
+                }
+            }
+        });
+
+        ys.ajax({
+            url: '@Url.Content("~/Stats/GetTestCaseStatsJson")',
+            type: "get",
+            success: function (obj) {
+                if (obj.Status) {
+                    var result = obj.Result;
+                    $("#testCaseStats").setWebControls(result);
+                }
+            }
+        });
+
+        ys.ajax({
+            url: '@Url.Content("~/Stats/GetTestTaskStatsJson")',
+            type: "get",
+            success: function (obj) {
+                if (obj.Status) {
+                    var result = obj.Result;
+                    $("#testTaskStats").setWebControls(result);
+                }
+            }
+        });
+
+        ys.ajax({
+            url: '@Url.Content("~/Stats/GetTaskExecStatsJson")',
+            type: "get",
+            success: function (obj) {
+                if (obj.Status) {
+                    var result = obj.Result;
+                    $("#taskExecStats").setWebControls(result);
+                }
+            }
+        });
+
+        ys.ajax({
+            url: '@Url.Content("~/Stats/GetCaseExecStatsJson")',
+            type: "get",
+            success: function (obj) {
+                if (obj.Status) {
+                    var result = obj.Result;
+                    $("#caseExecStats").setWebControls(result);
+                    console.log('caseExecStats', result);
+                }
+            }
+        });
+
+    }
+
+
+    function initCaseExecGrid() {
+        var queryUrl = '@Url.Content("~/TestTaskManager/CaseExecRecord/GetUnfinishedPageListJson")';
+        $('#caseExecGridTable').ysTable({
+            url: queryUrl,
+            toolbar: null,
+            showSearch: false,
+            showColumns:false,
+            showRefresh: false,
+            showToggle: false,
+            columns: [
+                //{ checkbox: true, visible: false },
+
+                //{ field: 'TaskId', title: 'TaskId' },
+                { field: 'Guid', title: '作业ID', width: '120px', visible: true },
+
+                //TaskExecName
+
+                //{ field: 'CaseId', title: '@(GlobalContext.SystemConfig.CaseName)ID', width: '120px' },
+                { field: 'Code', title: '@(GlobalContext.SystemConfig.CaseName)编码', visible: false },
+                { field: 'Name', title: '@(GlobalContext.SystemConfig.CaseName)名称' },
+                //{ field: 'TaskExecGuid', title: '任务ID', width: '120px', visible: false },
+                //{ field: 'TaskExecName', title: '任务名称', visible: true },
+                //{ field: 'SucceedAssertionCount', title: '成功断言数', width: '40px' },
+                //{ field: 'FailedAssertionCount', title: '失败断言数', width: '40px' },
+                //{ field: 'TotalAssertionCount', title: '总断言数', width: '40px', visible: false },
+                {
+                    field: 'CompositeStatus', title: '状态', width: '40px', formatter: function (value, row, index) {
+                        if (row.ExecStatus == "@ExecStatusEnumType.Ready.ParseToInt()") {
+                            return '<span class="badge badge-white">' + "待执行" + '</span>';
+
+                            //if (row.IsConsumed == 1) {
+                            //    return '<span class="badge badge-inverse">' + "队列中..." + '</span>';
+                            //}
+                            //else
+                            //{
+                            //    return '<span class="badge badge-white">' + "@ExecStatusEnumType.Ready.GetDescription()" + '</span>';
+                            //}
+
+                        }
+                        //if (row.CompositeStatus == "@CompositeStatusEnumType.Ready.ParseToInt()") {
+                        //    return '<span class="badge badge-white">' + "@CompositeStatusEnumType.Ready.GetDescription()" + '</span>';
+                        //}
+                        else if (row.CompositeStatus == "@CompositeStatusEnumType.Initing.ParseToInt()") {
+                            return '<span class="badge badge-info">' + "@CompositeStatusEnumType.Initing.GetDescription()" + '</span>';
+                        }
+                        else if (row.CompositeStatus == "@CompositeStatusEnumType.Running.ParseToInt()") {
+                            return '<span class="badge badge-primary">' + "@CompositeStatusEnumType.Running.GetDescription()" + '</span>';
+                        }
+                        else if (row.CompositeStatus == "@CompositeStatusEnumType.Paused.ParseToInt()") {
+                            return '<span class="badge badge-disable">' + "@CompositeStatusEnumType.Paused.GetDescription()" + '</span>';
+                        }
+                        //else if (row.CompositeStatus == "@CompositeStatusEnumType.Finished.ParseToInt()") {
+                        //    return '<span class="badge">' + "@CompositeStatusEnumType.Finished.GetDescription()" + '</span>';
+                        //}
+                        else if (row.CompositeStatus == "@CompositeStatusEnumType.Succeed.ParseToInt()") {
+                            return '<span class="badge badge-success">' + "@CompositeStatusEnumType.Succeed.GetDescription()" + '</span>';
+                        }
+                        else if (row.CompositeStatus == "@CompositeStatusEnumType.Failed.ParseToInt()") {
+                            return '<span class="badge badge-danger">' + "@CompositeStatusEnumType.Failed.GetDescription()" + '</span>';
+                        }
+                        else if (row.CompositeStatus == "@CompositeStatusEnumType.Cancelled.ParseToInt()") {
+                            return '<span class="badge badge-warning">' + "@CompositeStatusEnumType.Cancelled.GetDescription()" + '</span>';
+                        }
+                        else if (row.CompositeStatus == "@CompositeStatusEnumType.Aborted.ParseToInt()") {
+                            return '<span class="badge badge-warning">' + "@CompositeStatusEnumType.Aborted.GetDescription()" + '</span>';
+                        }
+                    }
+                },
+
+                {
+                    field: 'ConsumerDisplayName', title: '推送模式', width: '60px', formatter: function (value, row, index) {
+
+                        if (row.ConsumeMode == "@TaskConsumeModeEnumType.All.ParseToInt()") {
+                            return "";
+                            //return "@TaskConsumeModeEnumType.All.GetDescription()";
+                        }
+                        else if (row.ConsumeMode == "@TaskConsumeModeEnumType.SingleClient.ParseToInt()") {
+                            return '<a href="javascript:openViewConsumerPage(\'' + row.ConsumeMode + '\',\'' + row.ConsumerId + '\')">' + "@TaskConsumeModeEnumType.SingleClient.GetDescription()" + '</a>';
+                        }
+                        else if (row.ConsumeMode == "@TaskConsumeModeEnumType.ClientGroup.ParseToInt()") {
+                            return '<a href="javascript:openViewConsumerPage(\'' + row.ConsumeMode + '\',\'' + row.ConsumerId + '\')">' + "@TaskConsumeModeEnumType.ClientGroup.GetDescription()" + '</a>';
+                        }
+
+                    }
+                },
+
+
+                {
+                    field: 'ConsumeStatus', title: '推送状态', width: '40px', visible: false, formatter: function (value, row, index) {
+                        if (row.ConsumeStatus == "@ConsumeStatusEnumType.Ready.ParseToInt()") {
+                            return '<span class="badge badge-white">' + "@ConsumeStatusEnumType.Ready.GetDescription()" + '</span>';
+                        } else if (row.ConsumeStatus == "@ConsumeStatusEnumType.Consumed.ParseToInt()") {
+                            return '<span class="badge badge-success">' + "@ConsumeStatusEnumType.Consumed.GetDescription()" + '</span>';
+                        }
+                        else if (row.ConsumeStatus == "@ConsumeStatusEnumType.Cancelled.ParseToInt()") {
+                            return '<span class="badge badge-warning">' + "@ConsumeStatusEnumType.Cancelled.GetDescription()" + '</span>';
+                        } else if (row.ConsumeStatus == "@ConsumeStatusEnumType.Pending.ParseToInt()") {
+                            return '<span class="badge badge-warning">' + "@ConsumeStatusEnumType.Pending.GetDescription()" + '</span>';
+                        }
+                        else if (row.ConsumeStatus == "@ConsumeStatusEnumType.Invalid.ParseToInt()") {
+                            return '<span class="badge badge-warning">' + "@ConsumeStatusEnumType.Invalid.GetDescription()" + '</span>';
+                        }
+                    }
+                },
+                {
+                    field: 'ConsumedTime', title: '推送时间', width: '135px', formatter: function (value, row, index) {
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+
+                {
+                    field: 'StartTime', title: '开始时间', width: '135px', formatter: function (value, row, index) {
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+                //{
+                //    field: 'EndTime', title: '结束时间', width: '135px', formatter: function (value, row, index) {
+                //        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                //    }
+                //},
+                { field: 'UserName', title: '客户端用户', width: '40px' },
+                { field: 'AppVersion', title: '客户端版本', width: '40px', visible: false },
+                { field: 'DeviceName', title: '计算机名称', width: '140px' },
+                { field: 'DeviceIP', title: 'IP', width: '100px' },
+              
+               
+                {
+                    field: 'BaseCreateTime', title: '创建时间', width: '135px', formatter: function (value, row, index) {
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+             
+            ],
+            queryParams: function (params) {
+                var pagination = $('#caseExecGridTable').ysTable('getPagination', params);
+                var queryString = $('#caseExecSearchDiv').getWebControls(pagination);
+                return queryString;
+            }
+        });
+
+
+        var rrr =$('#caseExecSearchDiv  .fixed-table-toolbar');
+        rrr.hide();
+        console.log(rrr);
+    }
+
+    function openViewConsumerPage(consumeMode, consumerId) {
+
+        ys.openDialog({
+            title: consumeMode === '1' ? '查看客户端' : '查看客户端组',
+            content: '@Url.Content("~/TestTaskManager/CaseExecRecord/ViewConsumerIndex")' + '?consumeMode=' + consumeMode + '&consumerId=' + consumerId,
+            moveOut: true,
+            maxWidth: true,
+
+            shadeClose: true,
+            callback: function (index, layero) {
+                var childFrame = parent.window[layero.find('iframe')[0]['name']];
+                parent.layer.close(index);
+                console.log(index);
+
+
+            }
+        });
+    }
+</script>

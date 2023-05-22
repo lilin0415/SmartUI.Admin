@@ -1,0 +1,201 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>YiSha.Admin.WebApi</name>
+    </assembly>
+    <members>
+        <member name="T:YiSha.Admin.Web.WebApi.Controllers.BaseApiController">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:YiSha.Admin.Web.WebApi.Controllers.BaseApiController.GetCurrentUser">
+            <summary>
+            OperatorInfo
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:YiSha.Admin.Web.WebApi.Controllers.BaseApiController.CurrentUser">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:YiSha.Admin.Web.WebApi.Controllers.BaseApiController.UserToken">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:YiSha.Admin.Web.WebApi.Controllers.BaseApiController.AccessToken">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:YiSha.Admin.Web.WebApi.Controllers.BaseApiController.AppToken">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:YiSha.Admin.Web.WebApi.Controllers.BaseApiController.AppType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:YiSha.Admin.Web.WebApi.Controllers.BaseApiController.AppVersion">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:YiSha.Admin.Web.WebApi.Controllers.PublishController.UploadProject(Microsoft.AspNetCore.Http.IFormCollection)">
+            <summary>
+            上传项目
+            </summary>
+            <param name="fileModule"></param>
+            <param name="fileCollection"></param>
+            <returns></returns>
+        </member>
+        <member name="M:YiSha.Admin.Web.WebApi.Controllers.PublishController.DownloadProject(System.String,System.String)">
+            <summary>
+            下载项目
+            </summary>
+            <param name="guid"></param>
+            <param name="version"></param>
+            <returns></returns>
+            <exception cref="T:System.Exception"></exception>
+        </member>
+        <member name="M:YiSha.Admin.WebApi.Controllers.DataDictController.GetList(YiSha.Model.Param.SystemManage.DataDictListParam)">
+            <summary>
+            获取数据字典列表
+            </summary>
+            <param name="param"></param>
+            <returns></returns>
+        </member>
+        <member name="M:YiSha.Admin.WebApi.Controllers.FileController.DownloadProject(System.String,System.String)">
+            <summary>
+            下载项目
+            </summary>
+            <param name="guid"></param>
+            <param name="version"></param>
+            <returns></returns>
+            <exception cref="T:System.Exception"></exception>
+        </member>
+        <member name="T:YiSha.Admin.WebApi.Controllers.ModuleCategoryController">
+            <summary>
+            创 建：admin
+            日 期：2022-09-24 14:57
+            描 述：控制器类
+            </summary>
+        </member>
+        <member name="M:YiSha.Admin.WebApi.Controllers.NewsController.GetPageList(YiSha.Model.Param.OrganizationManage.NewsListParam,YiSha.Util.Model.Pagination)">
+            <summary>
+            获取文章列表
+            </summary>
+            <param name="param"></param>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:YiSha.Admin.WebApi.Controllers.NewsController.GetPageContentList(YiSha.Model.Param.OrganizationManage.NewsListParam,YiSha.Util.Model.Pagination)">
+            <summary>
+            获取文章列表
+            </summary>
+            <param name="param"></param>
+            <param name="pagination"></param>
+            <returns></returns>
+        </member>
+        <member name="M:YiSha.Admin.WebApi.Controllers.NewsController.GetForm(System.Int64)">
+            <summary>
+            获取文章内容
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:YiSha.Admin.WebApi.Controllers.NewsController.SaveForm(YiSha.Entity.OrganizationManage.NewsEntity)">
+            <summary>
+            保存文章
+            </summary>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+        <member name="T:YiSha.Admin.WebApi.Controllers.ProductController">
+            <summary>
+            创 建：admin
+            日 期：2022-09-23 23:04
+            描 述：控制器类
+            </summary>
+        </member>
+        <member name="T:YiSha.Admin.WebApi.Controllers.TestTaskController">
+            <summary>
+            创 建：admin
+            日 期：2022-09-24 14:57
+            描 述：控制器类
+            </summary>
+        </member>
+        <member name="M:YiSha.Admin.WebApi.Controllers.TestTaskController.GetPublishedVarByTestCaseId(System.Int64)">
+            <summary>
+            获取测试用例配置的变量
+            </summary>
+            <param name="testCaseId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:YiSha.Admin.WebApi.Controllers.TestTaskController.PullTasks(System.Int32)">
+            <summary>
+            拉取待消费的作业
+            </summary>
+            <param name="size"></param>
+            <returns></returns>
+        </member>
+        <member name="M:YiSha.Admin.WebApi.Controllers.TestTaskController.PullCaseExecListByTaskExecId(System.Int64)">
+            <summary>
+            拉取作业中包含的用例
+            </summary>
+            <param name="taskExecId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:YiSha.Admin.WebApi.Controllers.TestTaskController.UpdateTaskStatus(YiSha.Model.WebApis.UpdateTaskExecStatusBody)">
+            <summary>
+            更改任务状态
+            </summary>
+            <param name="taskStatus"></param>
+            <returns></returns>
+        </member>
+        <member name="M:YiSha.Admin.WebApi.Controllers.TestTaskController.UpdateCaseStatus(YiSha.Model.WebApis.UpdateCaseExecStatusBody)">
+            <summary>
+            更改用例状态
+            </summary>
+            <param name="caseStatus"></param>
+            <returns></returns>
+        </member>
+        <member name="M:YiSha.Admin.WebApi.Controllers.UserController.Login(YiSha.Model.WebApis.LoginRequestModel)">
+            <summary>
+            用户登录
+            </summary>
+            <param name="userName"></param>
+            <param name="password"></param>
+            <returns></returns>
+        </member>
+        <member name="M:YiSha.Admin.WebApi.Controllers.UserController.LoginOff(System.String)">
+            <summary>
+            用户退出登录
+            </summary>
+            <param name="token"></param>
+            <returns></returns>
+        </member>
+        <member name="T:YiSha.Admin.WebApi.Controllers.AuthorizeFilterAttribute">
+            <summary>
+            验证token和记录日志
+            </summary>
+        </member>
+        <member name="F:YiSha.Admin.WebApi.Controllers.AuthorizeFilterAttribute.IgnoreToken">
+            <summary>
+            忽略token的方法
+            </summary>
+        </member>
+        <member name="M:YiSha.Admin.WebApi.Controllers.AuthorizeFilterAttribute.OnActionExecutionAsync(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext,Microsoft.AspNetCore.Mvc.Filters.ActionExecutionDelegate)">
+            <summary>
+            异步接口日志
+            </summary>
+            <param name="context"></param>
+            <param name="next"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

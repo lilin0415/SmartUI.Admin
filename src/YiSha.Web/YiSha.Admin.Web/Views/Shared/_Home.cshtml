@@ -1,0 +1,127 @@
+﻿@using YiSha.Util.Model;
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostingEnvironment
+<!DOCTYPE HTML>
+<html lang="en" class="csstransforms csstransforms3d csstransitions">
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+
+    <meta name="keywords" content="@SystemConfig.ProductFullName">
+    <meta name="description" content="@SystemConfig.ProductFullName">
+
+    <link rel="bookmark" href='@Url.Content("~/favicon.ico")' />
+    <link rel="shortcut icon" href="@Url.Content("~/favicon.ico")" type="image/x-icon" />
+
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/home_files/bootstrap.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/home_files/font-awesome.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/home_files/animate.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/home_files/owl.carousel.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/home_files/owl.transitions.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/home_files/prettyPhoto.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/home_files/main.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/home_files/responsive.css"))
+
+   
+    @RenderSection("header", false)
+    <title>@SystemConfig.ProductFullName</title>
+
+   
+    <script type="text/javascript">
+        var ctx = '@Url.Content("~/")';
+    </script>
+</head>
+<body id="home" class="homepage">
+
+	<header id="header">
+		<nav id="main-menu" class="navbar navbar-default navbar-fixed-top" role="banner">
+			<div class="container">
+				<div class="topnavbar clearfix">
+					<span class="alignright">
+
+						<a class="padding-left" href="@Url.Content("~/Member/Register")" target="_self" title="注册">注册</a>
+						<a href="@Url.Content("~/Member/Login")" target="_self" title="登录">登录</a>
+					</span>
+
+				</div>
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="javascript:void(0)"><img src="@Url.Content("~/home_files/logo.png")" alt="logo"></a>
+				</div>
+
+				<div class="collapse navbar-collapse navbar-left">
+					<ul class="nav navbar-nav">
+						<li class="scroll active"><a href="#home">首页</a></li>
+						<li class="scroll"><a href="#features">产品</a></li>
+						<li class="scroll"><a href="#services">服务</a></li>
+						<li class="scroll"><a href="#about">关于</a></li>
+						<li class="scroll"><a href="#footer">联系我们</a></li>
+
+
+
+					</ul>
+				</div>
+			</div><!--/.container-->
+		</nav><!--/nav-->
+	</header><!--/header-->
+
+    @RenderBody()
+    @RenderSection("footer", false)
+
+	<footer id="footer">
+		<div class="container">
+			<div class="row">
+
+
+				<div class="col-sm-4">
+					<h3>关于</h3>
+					<p>
+						新石器是一款功能强大、简单易用、0编程的自动化测试系统，并提供在开发、集成、部署、运行和维护过程中一整套专业的自动化测试解决方案。
+						<!-- 帮助企业解决日常测试管理过程中遇到的资产管理、测试效率、测试质量等问题，降低企业研发成本，提高产品质量，助力企业实现数字化、智能化升级转型。 -->
+					</p>
+				</div>
+				<div class="col-sm-4">
+					<h3>联系我们</h3>
+					<p>
+						电话(微): 18101058601<br>
+						QQ群：312769914
+					</p>
+				</div>
+				<div class="col-sm-4">
+					<h3>常用链接</h3>
+					<p>
+
+						<a href="#home" title="首页">首页</a><br>
+						<a href="#footer" title="联系我们">联系我们</a>
+					</p>
+				</div>
+
+			</div>
+			<div class="row">
+				<div id="footer-bottom" class="col-sm-12 text-center">
+					<p>Copyright © 2014.毫木软件 All rights reserved.</p>
+				</div>
+			</div>
+
+		</div>
+	</footer>
+	@BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/home_files/jquery.js"))
+	@BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/home_files/bootstrap.min.js"))
+	@BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/home_files/owl.carousel.min.js"))
+	@BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/home_files/mousescroll.js"))
+	@BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/home_files/smoothscroll.js"))
+	@BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/home_files/jquery.prettyPhoto.js"))
+	@BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/home_files/jquery.isotope.min.js"))
+	@BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/home_files/jquery.inview.min.js"))
+	@BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/home_files/wow.min.js"))
+	@BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/home_files/main.js"))
+
+</body>
+</html>

@@ -1,0 +1,174 @@
+﻿@{
+    Layout = "~/Views/Shared/_Index.cshtml";
+    OperatorInfo operatorInfo = ViewBag.OperatorInfo;
+}
+<div class="container-div">
+    <div class="row">
+        <div id="searchDiv" class="col-sm-12 search-collapse">
+            <div class="select-list">
+                <ul>
+                    <li>
+                        字典类型：<input id="dictType" col="DictType" type="text" />
+                    </li>
+                    <li>
+                        字典描述：<input id="remark" col="Remark" type="text" />
+                    </li>
+                    <li>
+                        <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="btn-group-sm" id="toolbar">
+            @if (operatorInfo.HasManagerPower)
+            {
+
+                <a id="btnAdd" class="btn btn-success" onclick="showSaveForm(true)"><i class="fa fa-plus"></i> 新增</a>
+                <a id="btnEdit" class="btn btn-primary disabled" onclick="showSaveForm(false)"><i class="fa fa-edit"></i> 修改</a>
+                <a id="btnDelete" class="btn btn-danger disabled" onclick="deleteForm()"><i class="fa fa-remove"></i> 删除</a>
+            }
+            else
+            {
+
+            }
+
+        </div>
+
+        <div class="col-sm-12 select-table table-striped">
+            <table id="gridTable" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        initGrid();
+    });
+
+    function initGrid() {
+        var queryUrl = '@Url.Content("~/SystemManage/DataDict/GetPageListJson")';
+        $('#gridTable').ysTable({
+            url: queryUrl,
+            sortName: 'DictSort',
+            sortOrder: 'Asc',
+            columns: [
+                { checkbox: true, visible: true },
+                { field: 'Id', title: 'Id', visible: false },
+                
+                { field: 'DictType', title: '字典类型' },
+                { field: 'DictName', title: '名称' },
+                { field: 'Remark', title: '备注' },
+                { field: 'DictSort', title: '排序' },
+                {
+                    field: 'BaseModifyTime', title: '创建时间', formatter: function (value, row, index) {
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-info btn-xs" href="#" onclick="showDataDictDetailForm(\'' + row.DictType + '\', \'' + row.IsSystem + '\')"><i class="fa fa-list-ul"></i>字典值</a>');
+                        return actions.join('');
+                    }
+                }
+            ],
+            queryParams: function (params) {
+                var pagination = $('#gridTable').ysTable('getPagination', params);
+                var queryString = $('#searchDiv').getWebControls(pagination);
+                return queryString;
+            }
+        });
+    }
+
+    function searchGrid() {
+        $('#gridTable').ysTable('search');
+        resetToolbarStatus();
+    }
+
+    function showSaveForm(bAdd) {
+        var id = 0;
+        if (!bAdd) {
+            var selectedRow = $("#gridTable").bootstrapTable("getSelections");
+            if (!ys.checkRowEdit(selectedRow)) {
+                return;
+            }
+            else {
+                id = selectedRow[0].Id;
+
+                @if (operatorInfo.HasManagerPower)
+                {
+                }
+                else
+                {
+                    <text>
+                            var row = selectedRow[0];
+                            if (row.IsSystemMenu) {
+                                ys.alertWarning(row.MenuName + " 为系统数据，不允许修改");
+                                //ys.msgWarning(row.MenuName + " 为系统菜单，只能查看");
+                                return;
+                            }
+                    </text>
+                }
+            }
+        }
+        ys.openDialog({
+            title: id > 0 ? "编辑字典" : "添加字典",
+            content: '@Url.Content("~/SystemManage/DataDict/DataDictForm")' + '?id=' + id,
+            callback: function (index, layero) {
+                var iframeWin = window[layero.find('iframe')[0]['name']];
+                iframeWin.saveForm(index);
+            }
+        });
+    }
+
+    function deleteForm() {
+        var selectedRow = $("#gridTable").bootstrapTable("getSelections");
+        if (ys.checkRowDelete(selectedRow)) {
+
+    @if (operatorInfo.HasManagerPower)
+    {
+    }
+    else
+    {
+        @Html.Raw(@"
+                for (var i = 0; i < selectedRow.length; i++)
+                {
+                    var row = selectedRow[i];
+                    console.log(row);
+
+                    if (row.IsSystemMenu)
+                    {
+                        ys.alertWarning(row.MenuName + ' 为系统数据，不允许删除');
+
+                        return;
+                    }
+                }
+                ")
+
+    }
+            ys.confirm("确认要删除选中的" + selectedRow.length + "条数据吗？", function () {
+                var ids = ys.getIds(selectedRow);
+                ys.ajax({
+                    url: '@Url.Content("~/SystemManage/DataDict/DeleteFormJson")' + '?ids=' + ids,
+                    type: "post",
+                    success: function (obj) {
+                        if (obj.Status) {
+                            ys.msgSuccess(obj.Message);
+                            searchGrid();
+                        }
+                        else {
+                            ys.msgError(obj.Message);
+                        }
+                    }
+                });
+            });
+        }
+    }
+
+    function showDataDictDetailForm(dictType, isSystem) {
+        var url = '@Url.Content("~/SystemManage/DataDictDetail/DataDictDetailIndex")' + '?dictType=' + dictType + '&isSystem=' + isSystem;
+        createMenuItem(url, "字典数据");
+    }
+</script>

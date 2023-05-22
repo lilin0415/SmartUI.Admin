@@ -1,0 +1,296 @@
+﻿@{
+    Layout = "~/Views/Shared/_Index.cshtml";
+ }
+<div class="container-div">
+    <div class="row">
+        <div id="searchDiv" class="col-sm-12 search-collapse" style="display:none;">
+            <input id="caseExecId" col="CaseExecId" type="hidden" />
+          @*  <div class="select-list">
+                <ul>
+                    <li>
+                        CaseExecId：<input id="caseExecId" col="CaseExecId" type="text" />
+                    </li>
+                    <li>
+                        <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                    </li>
+                </ul>
+            </div>*@
+        </div>
+        <div class="btn-group-sm hidden-xs" id="toolbar">
+          @*  <a id="btnAdd" class="btn btn-success" onclick="showSaveForm(true)"><i class="fa fa-plus"></i> 新增</a>
+            <a id="btnEdit" class="btn btn-primary disabled" onclick="showSaveForm(false)"><i class="fa fa-edit"></i> 修改</a>
+            <a id="btnDelete" class="btn btn-danger disabled" onclick="deleteForm()"><i class="fa fa-remove"></i> 删除</a>*@
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="gridTable" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+<style type="text/css">
+    .logDetail{
+    }
+
+    .logItem {
+        margin:4px;
+    }
+    .logParameterName {
+    }
+
+    .logParameterValue {
+        font-size:14px;
+        color: #1c84c6;
+    }
+</style>
+<script type="text/javascript">
+    var caseExecId = ys.request("caseExecId");
+
+    $(function () {
+        $("#caseExecId").val(caseExecId);
+
+        initGrid();
+        $("#gridTable").on('expand-row.bs.table', function (e, index, row, $detail) {
+            //InitSubTable(index, row, $detail);
+            console.log(e, index, row, $detail);
+            //console.log("xxx");
+            createDetail(index,row, $detail);
+        })
+    });
+
+    function initGrid() {
+        var queryUrl = '@Url.Content("~/TestTaskManager/CaseExecLog/GetPageListJson")';
+        $('#gridTable').ysTable({
+            url: queryUrl,
+            detailView:true,
+            detailFilter: function (index, row) {
+                if (!ys.isNullOrEmpty(row.InputParameters)) {
+                   return true;
+                }
+
+                if (!ys.isNullOrEmpty(row.OutputParameters)) {
+                    return true;
+                }
+                return false;
+            },
+            sortName: 'DateTime',
+            sortOrder:'asc',
+            pageSize:25,
+            columns: [
+              
+                //{ field: 'Id', title: 'Id', visible: false },
+                //{ field: 'CaseExecId', title: '作业ID', visible: false },
+                //{ field: 'LogId', title: 'LogId', visible: false },
+
+                //{
+                //    field: 'Message', title: '日志',  formatter: function (value, row, index) {
+                //        var actions = [];
+                       
+                //        if (!ys.isNullOrEmpty(row.ExecutionPathName)) {
+                //            actions.push(row.ExecutionPathName);
+                //        }
+
+                //        if (!ys.isNullOrEmpty(row.ExecutorName)) {
+                //            var lineNumber = row.LineNumber;
+                //            if (lineNumber > 0) {
+                //                actions.push(row.ExecutorName + ", 行:" + lineNumber);
+                //            }
+                //            else {
+                //                actions.push(row.ExecutorName);
+                //            }  
+                //        }
+                //        if(actions.length>0)
+                //        {
+                //            return '['+actions.join('->')+'] '+ row.Message;
+                //        }
+                //        else
+                //        {
+                //            return row.Message;
+                //        }
+                      
+                //    }
+                //},
+
+               
+
+                {
+                    field: 'Message', title: '日志', formatter: function (value, row, index) {
+                        var actions = [];
+
+                        if (!ys.isNullOrEmpty(row.ExecutionPathName)) {
+                            //actions.push(row.ExecutionPathName);
+                        }
+
+                        if (!ys.isNullOrEmpty(row.ExecutorName)) {
+                            var lineNumber = row.LineNumber;
+                            if (lineNumber > 0) {
+                                actions.push(row.ExecutorName + ", 行:" + lineNumber);
+                            }
+                            else {
+                                actions.push(row.ExecutorName);
+                            }
+                        }
+                        if (actions.length > 0) {
+                            return '[' + actions.join('->') + '] ' + row.Message;
+                        }
+                        else {
+                            return row.Message;
+                        }
+
+                    }
+                },
+                { field: 'ExecutionPathName', title: '流程' },
+                //{ field: 'ExecutorName', title: '命令' },
+                //{ field: 'LineNumber', title: '行号' },
+                //{ field: 'Message', title: '日志' },
+                {
+                    field: 'DateTime', title: '开始时间', width: '135px', formatter: function (value, row, index) {
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+                {
+                    field: 'EndTime', title: '结束时间', width: '135px', formatter: function (value, row, index) {
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+                //{ field: 'InputParameters', title: '输入参数' },
+                //{ field: 'OutputParameters', title: '输出参数' },
+                {
+                    field: 'Status', title: '状态', width: '40px', formatter: function (value, row, index) {
+                        if (row.Status == "@ExecuteResultStatusEnumType.None.ParseToInt()") {
+                            return '<span class="badge badge-white">' + "" + '</span>';
+                        }
+                        if (row.Status == "@ExecuteResultStatusEnumType.Succeed.ParseToInt()") {
+                            return '';
+                            return '<span class="badge badge-success">' + "@ExecuteResultStatusEnumType.Succeed.GetDescription()" + '</span>';
+                        }
+                        else if (row.Status == "@ExecuteResultStatusEnumType.Failed.ParseToInt()") {
+                            return '<span class="badge badge-danger">' + "@ExecuteResultStatusEnumType.Failed.GetDescription()" + '</span>';
+                        }
+                        else if (row.Status == "@ExecuteResultStatusEnumType.Cancelled.ParseToInt()") {
+                            return '<span class="badge badge-warning">' + "@ExecuteResultStatusEnumType.Cancelled.GetDescription()" + '</span>';
+                        }
+                        else if (row.Status == "@ExecuteResultStatusEnumType.Aborted.ParseToInt()") {
+                            return '';
+                            return '<span class="badge badge-warning">' + "@ExecuteResultStatusEnumType.Aborted.GetDescription()" + '</span>';
+                        }
+                    }
+                },
+
+                {
+                    field: 'Reason', title: '结果'
+                    , cellStyle: function (value, row, index) {
+                        return {
+                            css: {
+                                //"min-width": "40px",
+                                "white-space": "nowrap",
+                                "text-overflow": "ellipsis",
+                                "overflow": "hidden",
+                                "max-width": "120px"
+                            }
+                        };
+                    }
+                    , formatter: function (value, row, index) {
+                        if (value == null) {
+                            return '-';
+                        }
+                        //获取备注内容
+                        var value = "" + value + "";
+                        //自定义单元格内容
+                        var span = document.createElement('span');
+                        //写入面板标题
+                        span.setAttribute('title', value);
+                        //写入面板内容
+                        span.innerHTML = value;
+                        //将面板返回至单元格展示
+                        return span.outerHTML;
+
+                    }
+                },
+                //{ field: 'BeforeScreenshot', title: '执行前图片' },
+                //{ field: 'AfterScreenshot', title: '执行后图片' },
+            ],
+            queryParams: function (params) {
+                var pagination = $('#gridTable').ysTable('getPagination', params);
+                var queryString = $('#searchDiv').getWebControls(pagination);
+                return queryString;
+            }
+        });
+    }
+
+    function searchGrid() {
+        $('#gridTable').ysTable('search');
+        resetToolbarStatus();
+    }
+
+    function showSaveForm(bAdd) {
+        var id = 0;
+        if (!bAdd) {
+            var selectedRow = $('#gridTable').bootstrapTable('getSelections');
+            if (!ys.checkRowEdit(selectedRow)) {
+                return;
+            }
+            else {
+                id = selectedRow[0].Id;
+            }
+        }
+        ys.openDialog({
+            title: id > 0 ? '编辑' : '添加',
+            content: '@Url.Content("~/TestTaskManager/CaseExecLog/CaseExecLogForm")' + '?id=' + id,
+            width: '768px',
+            height: '550px',
+            callback: function (index, layero) {
+                var iframeWin = window[layero.find('iframe')[0]['name']];
+                iframeWin.saveForm(index);
+            }
+        });
+    }
+
+    function deleteForm() {
+        var selectedRow = $('#gridTable').bootstrapTable('getSelections');
+        if (ys.checkRowDelete(selectedRow)) {
+            ys.confirm('确认要删除选中的' + selectedRow.length + '条数据吗？', function () {
+                var ids = ys.getIds(selectedRow);
+                ys.ajax({
+                    url: '@Url.Content("~/TestTaskManager/CaseExecLog/DeleteFormJson")' + '?ids=' + ids,
+                    type: 'post',
+                    success: function (obj) {
+                        if (obj.Status) {
+                            ys.msgSuccess(obj.Message);
+                            searchGrid();
+                        }
+                        else {
+                            ys.msgError(obj.Message);
+                        }
+                    }
+                });
+            });
+        }
+    }
+
+    function createDetail(index, row, $detail) {
+        var cur_table = $detail.html('<div class="logDetail"></div>').find("div");
+        var html = '';
+
+        if (!ys.isNullOrEmpty(row.InputParameters)) {
+            var parameters = JSON.parse(row.InputParameters);
+           
+            for (var i = 0; i < parameters.length; i++) {
+                var name = parameters[i].Name;
+                var value = parameters[i].Value;
+                html += '<span class="logItem"><span class="logParameterName">' + name + ': </span><span class="logParameterValue">' + value + '</span></span>';
+            }
+        }
+
+        if (!ys.isNullOrEmpty(row.OutputParameters)) {
+            var parameters = JSON.parse(row.OutputParameters);
+
+            for (var i = 0; i < parameters.length; i++) {
+                var name = parameters[i].Name;
+                var value = parameters[i].Value;
+                html += '<span class="logItem"><span class="logParameterName">' + name + ': </span><span class="logParameterValue">' + value + '</span></span>';
+            }
+        }
+      
+        cur_table.html(html);
+
+    }
+</script>

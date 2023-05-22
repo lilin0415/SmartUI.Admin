@@ -1,0 +1,182 @@
+﻿@{
+    Layout = "~/Views/Shared/_Index.cshtml";
+ }
+ @inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostingEnvironment
+@section header{
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/zTree/v3/css/metroStyle/metroStyle.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/zTree/v3/js/ztree.min.js"))
+
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/jquery.layout/1.4.4/jquery.layout-latest.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/jquery.layout/1.4.4/jquery.layout-latest.min.js"))
+
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/bootstrap.treetable/1.0/bootstrap-treetable.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/bootstrap.treetable/1.0/bootstrap-treetable.min.js"))
+}
+
+
+    <div class="container-div  ui-layout-center">
+    <div class="row">
+        <div id="searchDiv" class="col-sm-12  hidden-xs">
+                <input type="hidden" id="consumeMode" col="ConsumeMode">
+              
+            <div class="select-list">
+                <ul>
+                   
+                    <li>
+                        客户端(组)名称：<input id="name" col="Name" type="text" />
+                    </li>
+                
+                    <li>
+                        <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        @*<div class="btn-group-sm hidden-xs" id="toolbar">
+            <a id="btnAdd" class="btn btn-success" onclick="showSaveForm(true)"><i class="fa fa-plus"></i> 新增</a>
+            <a id="btnEdit" class="btn btn-primary disabled" onclick="showSaveForm(false)"><i class="fa fa-edit"></i> 修改</a>
+            <a id="btnDelete" class="btn btn-danger disabled" onclick="deleteForm()"><i class="fa fa-remove"></i> 删除</a>
+        </div>*@
+        <div class="col-sm-12 select-table table-striped">
+            <table id="gridTable" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+
+    <input type="hidden" id="consumerId" col="ConsumeId" />
+    <input type="hidden" id="consumerName" col="ConsumeName" />
+</div>
+
+<script type="text/javascript">
+    var consumeMode = ys.request('consumeMode');
+
+    $(function () {
+        $("#consumeMode").val(consumeMode);
+        if (consumeMode == 1) {
+            initGridDevice();
+        }
+        else if(consumeMode==2){
+            initGridDeviceGroup();
+        }
+    });
+
+
+    function initGridDevice() {
+        var queryUrl = '@Url.Content("~/DeviceManager/OnlineDevice/GetPageListJson")';
+        $('#gridTable').ysTable({
+            url: queryUrl,
+            singleSelect: true,
+            toolbar: '#searchDiv',
+            columns: [
+                { checkbox: true, visible: true },
+                { field: 'Id', title: 'Id', visible: false },
+
+
+                { field: 'UserName', title: '客户端用户', width: '120px', sortable: true },
+                { field: 'AppVersion', title: '客户端版本', width: '120px' },
+
+                {
+                    field: 'LastActiveTime', title: '上次在线时间', sortable: true, width: '135px', formatter: function (value, row, index) {
+                        var formated = ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                        var friendly = ys.dateTimeFriendly(formated);
+                        var r = '<span style="padding:0px;" title="' + formated + '">' + friendly + '</span>';
+                        return r;
+
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+                {
+                    field: 'UserLoginTime', title: '登录时间', width: '135px', formatter: function (value, row, index) {
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+
+                { field: 'Name', title: '计算机名称', sortable: true },
+                //{ field: 'LoginName', title: '计算机用户', width: '120px' },
+                { field: 'IP', title: 'IP', width: '120px' },
+                { field: 'MAC', title: 'MAC地址', width: '210px' },
+
+                {
+                    field: 'BaseCreateTime', title: '创建时间', width: '135px', visible: false, formatter: function (value, row, index) {
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+            ],
+            queryParams: function (params) {
+                var pagination = $('#gridTable').ysTable('getPagination', params);
+                var queryString = $('#searchDiv').getWebControls(pagination);
+                return queryString;
+            }
+            , onCheck: function () {
+                saveChoose();
+            }
+        });
+    }
+
+    function initGridDeviceGroup() {
+        var queryUrl = '@Url.Content("~/DeviceManager/DeviceGroup/GetPageListJson")';
+        $('#gridTable').ysTable({
+            url: queryUrl,
+            singleSelect: true,
+            toolbar: '#searchDiv',
+            columns: [
+                { checkbox: true, visible: true },
+                
+                { field: 'Name', title: '名称' },
+                { field: 'Remark', title: '备注' },
+              
+                {
+                    field: 'BaseCreateTime', title: '创建时间', width: '135px', formatter: function (value, row, index) {
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+
+            ],
+            queryParams: function (params) {
+                var pagination = $('#gridTable').ysTable('getPagination', params);
+                var queryString = $('#searchDiv').getWebControls(pagination);
+                return queryString;
+            }
+            , onCheck: function () {
+                saveChoose();
+            }
+        });
+    }
+    function searchGrid() {
+        $('#gridTable').ysTable('search');
+        resetToolbarStatus();
+    }
+
+
+    function saveChoose() {
+        $("#consumerId").val("");
+        $("#consumerName").val("");
+      
+        var selectedRow = $('#gridTable').bootstrapTable('getSelections');
+
+        if (selectedRow.length === 1) {
+            var data = selectedRow[0];
+            console.log(data);
+
+            $("#consumerId").val(data.Id);
+            if(consumeMode==1)
+            {
+                var consumerName = data.UserName + '(' + data.Name + ',' + data.IP + ')';
+                $("#consumerName").val(consumerName);
+            }
+            else
+            {
+                $("#consumerName").val(data.Name);
+            }
+        }
+
+    }
+    function verifySave() {
+        var selectedGuid = $("#consumerId").val();
+        if (ys.isNullOrEmpty(selectedGuid)) {
+            ys.msgError('请选择客户端/客户端组');
+            return false;
+        }
+
+        return true;
+    }
+</script>

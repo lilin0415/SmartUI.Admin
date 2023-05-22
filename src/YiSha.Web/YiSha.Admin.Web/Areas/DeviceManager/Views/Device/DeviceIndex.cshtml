@@ -1,0 +1,132 @@
+﻿@{
+    Layout = "~/Views/Shared/_Index.cshtml";
+ }
+<div class="container-div">
+    <div class="row">
+        <div id="searchDiv" @*class="col-sm-12 search-collapse"*@>
+            @*<div class="select-list">
+                <ul>
+                    <li>
+                        TenantId：<input id="tenantId" col="TenantId" type="text" />
+                    </li>
+                    <li>
+                        <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                    </li>
+                </ul>
+            </div>*@
+        </div>
+        <div class="btn-group-sm hidden-xs" id="toolbar">
+            @*<a id="btnAdd" class="btn btn-success" onclick="showSaveForm(true)"><i class="fa fa-plus"></i> 新增</a>
+            <a id="btnEdit" class="btn btn-primary disabled" onclick="showSaveForm(false)"><i class="fa fa-edit"></i> 修改</a>*@
+            @*<a id="btnDelete" class="btn btn-danger disabled" onclick="deleteForm()"><i class="fa fa-remove"></i> 删除</a>*@
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="gridTable" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        initGrid();
+    });
+
+    function initGrid() {
+        var queryUrl = '@Url.Content("~/DeviceManager/Device/GetMyPageListJson")';
+        $('#gridTable').ysTable({
+            url: queryUrl,
+            columns: [
+                //{ checkbox: true, visible: true },
+                { field: 'Id', title: 'Id', visible: false },
+                //{ field: 'TenantId', title: 'TenantId', visible: false },
+                //{ field: 'UId', title: '设备Id' },
+                //{ field: 'Guid', title: '设备Guid' },
+
+                //{ field: 'UserId', title: '客户端用户Id', visible: false },
+                { field: 'UserName', title: '客户端用户', width: '120px', sortable: true },
+                { field: 'AppVersion', title: '客户端版本' },
+
+                {
+                    field: 'LastActiveTime', title: '上次在线时间', sortable: true, width: '135px', formatter: function (value, row, index) {
+                        var formated = ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                        var friendly = ys.dateTimeFriendly(formated);
+                        var r = '<span style="padding:0px;" title="' + formated + '">' + friendly + '</span>';
+                        return r;
+
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+                {
+                    field: 'UserLoginTime', title: '登录时间', width: '135px', formatter: function (value, row, index) {
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+
+                { field: 'Name', title: '计算机名称' },
+                { field: 'IP', title: 'IP' },
+                { field: 'MAC', title: 'MAC地址' },
+                {
+                    field: 'BaseCreateTime', title: '创建时间', width: '135px', formatter: function (value, row, index) {
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+                
+            ],
+            queryParams: function (params) {
+                var pagination = $('#gridTable').ysTable('getPagination', params);
+                var queryString = $('#searchDiv').getWebControls(pagination);
+                return queryString;
+            }
+        });
+    }
+
+    function searchGrid() {
+        $('#gridTable').ysTable('search');
+        resetToolbarStatus();
+    }
+
+    function showSaveForm(bAdd) {
+        var id = 0;
+        if (!bAdd) {
+            var selectedRow = $('#gridTable').bootstrapTable('getSelections');
+            if (!ys.checkRowEdit(selectedRow)) {
+                return;
+            }
+            else {
+                id = selectedRow[0].Id;
+            }
+        }
+        ys.openDialog({
+            title: id > 0 ? '编辑' : '添加',
+            content: '@Url.Content("~/DeviceManager/Device/DeviceForm")' + '?id=' + id,
+            width: '768px',
+            height: '550px',
+            callback: function (index, layero) {
+                var iframeWin = window[layero.find('iframe')[0]['name']];
+                iframeWin.saveForm(index);
+            }
+        });
+    }
+
+    function deleteForm() {
+        var selectedRow = $('#gridTable').bootstrapTable('getSelections');
+        if (ys.checkRowDelete(selectedRow)) {
+            ys.confirm('确认要删除选中的' + selectedRow.length + '条数据吗？', function () {
+                var ids = ys.getIds(selectedRow);
+                ys.ajax({
+                    url: '@Url.Content("~/DeviceManager/Device/DeleteFormJson")' + '?ids=' + ids,
+                    type: 'post',
+                    success: function (obj) {
+                        if (obj.Status) {
+                            ys.msgSuccess(obj.Message);
+                            searchGrid();
+                        }
+                        else {
+                            ys.msgError(obj.Message);
+                        }
+                    }
+                });
+            });
+        }
+    }
+</script>

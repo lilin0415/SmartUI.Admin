@@ -1,0 +1,118 @@
+﻿@{
+    Layout = "~/Views/Shared/_FormWhite.cshtml";
+
+    OperatorInfo operatorInfo = ViewBag.OperatorInfo;
+}
+
+<div class="wrapper animated fadeInRight">
+    <form id="form" class="form-horizontal m">
+      
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">字典类型<font class="red"> *</font></label>
+            <div class="col-sm-8">
+                <input id="dictType" col="DictType" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">名称<font class="red"> *</font></label>
+            <div class="col-sm-8">
+                <input id="dictName" col="DictName" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">备注</label>
+            <div class="col-sm-8">
+                <input id="remark" col="Remark" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">字典排序</label>
+            <div class="col-sm-8">
+                <input id="dictSort" col="DictSort" type="text" class="form-control" />
+            </div>
+        </div>
+        @if (operatorInfo.HasManagerPower)
+        {
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">是否系统字典</label>
+                <div class="col-sm-8" id="isSystem" col="IsSystem"></div>
+
+            </div>
+
+        }
+    </form>
+</div>
+
+<script type="text/javascript">
+    var id = ys.request("id");
+    $(function () {
+        getForm();
+
+    @if (operatorInfo.HasManagerPower)
+    {
+        <text>
+                $("#isSystem").ysRadioBox({ data: ys.getJson(@Html.Raw(typeof(IsEnum).EnumToDictionaryString())), default: '0' });
+            
+        </text>
+    }
+
+        $("#form").validate({
+            rules: {
+                dictName: { required: true },
+                dictType: { required: true }
+            }
+        });
+    });
+
+    function getForm() {
+        if (id > 0) {
+            $("#dictType").attr("readonly","readonly");
+
+            ys.ajax({
+                url: '@Url.Content("~/SystemManage/DataDict/GetFormJson")' + '?id=' + id,
+                type: "get",
+                success: function (obj) {
+                    if (obj.Status) {
+                        $("#form").setWebControls(obj.Result);
+                    }
+                }
+            });
+        }
+        else {
+            ys.ajax({
+                url: '@Url.Content("~/SystemManage/DataDict/GetMaxSortJson")',
+                type: "get",
+                success: function (obj) {
+                    if (obj.Status) {
+                        var defaultData = {};
+                        defaultData.DictSort = obj.Result;
+                        $("#form").setWebControls(defaultData);
+                    }
+                }
+            });
+        }
+    }
+
+    function saveForm(index) {
+        if ($("#form").validate().form()) {
+            var postData = $("#form").getWebControls({ Id: id });
+            ys.ajax({
+                url: '@Url.Content("~/SystemManage/DataDict/SaveFormJson")',
+                type: "post",
+                data: postData,
+                success: function (obj) {
+                    if (obj.Status) {
+                        ys.msgSuccess(obj.Message);
+                        parent.searchGrid();
+                        parent.layer.close(index);
+                    }
+                    else {
+                        ys.msgError(obj.Message);
+                    }
+                }
+            });
+        }
+    }
+</script>
+

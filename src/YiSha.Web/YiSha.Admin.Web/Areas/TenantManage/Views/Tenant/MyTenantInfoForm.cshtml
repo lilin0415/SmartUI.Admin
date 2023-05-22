@@ -1,0 +1,137 @@
+﻿@{
+    Layout = "~/Views/Shared/_FormWhite.cshtml";
+}
+
+<div class="wrapper animated fadeInRight">
+    <form id="form" class="form-horizontal m">
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">编码<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="code" col="Code" type="text" class="form-control" />
+            </div>
+            <label class="col-sm-2 control-label ">名称<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="name" col="Name" type="text" class="form-control" />
+            </div>
+        </div>
+       
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">简称</label>
+            <div class="col-sm-4">
+                <input id="shortName" col="ShortName" type="text" class="form-control" />
+            </div>
+            <label class="col-sm-2 control-label ">联系人</label>
+            <div class="col-sm-4">
+                <input id="contact" col="Contact" type="text" class="form-control" />
+            </div>
+        </div>
+     
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">电话</label>
+            <div class="col-sm-4">
+                <input id="phone" col="Phone" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">备注</label>
+            <div class="col-sm-10">
+                <textarea id="remark" class="form-control" style="height:60px"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">可见性</label>
+            <div class="col-sm-4">
+                <div id="visibleScope" col="VisibleScope"  ></div>
+            </div>
+            <label class="col-sm-2 control-label ">加入验证方式</label>
+            <div class="col-sm-4">
+                <div id="allowJoinType" col="AllowJoinType"  ></div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">用户加入时默认部门</label>
+            <div class="col-sm-4">
+                <div id="defaultDepartmentId" col="DefaultDepartmentId"></div>
+            </div>
+
+            <label class="col-sm-2 control-label ">默认职位</label>
+            <div class="col-sm-4">
+                <div id="defaultPositionIds" col="DefaultPositionIds"></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">默认角色</label>
+            <div class="col-sm-10" id="defaultRoleIds" col="DefaultRoleIds"></div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    var id = ys.request("id");
+    $(function () {
+
+        $("#visibleScope").ysRadioBox({ data: ys.getJson(@Html.Raw(typeof(VisibleScopeEnumType).EnumToDictionaryString())), default: '1' });
+        $("#allowJoinType").ysRadioBox({ data: ys.getJson(@Html.Raw(typeof(AllowJoinTypeEnumType).EnumToDictionaryString())), default: '1' });
+
+        $("#defaultRoleIds").ysCheckBox({
+            url: '@Url.Content("~/SystemManage/Role/GetListJson")',
+            key: "Id",
+            value: "RoleName"
+        });
+
+        $("#defaultPositionIds").ysComboBox({
+            url: '@Url.Content("~/OrganizationManage/Position/GetListJson")',
+            key: "Id",
+            value: "PositionName",
+            class: "form-control",
+            multiple: true
+        });
+
+        $('#defaultDepartmentId').ysComboBoxTree({ url: '@Url.Content("~/OrganizationManage/Department/GetDepartmentTreeListJson")' });
+
+
+        getForm();
+
+        $('#form').validate({
+            rules: {
+                code: { required: true },
+                name: { required: true }
+            }
+        });
+    });
+
+    function getForm() {
+        ys.ajax({
+            url: '@Url.Content("~/TenantManage/Tenant/GetMyTenantInfoFormJson")' + '?id=' + id,
+            type: 'get',
+            success: function (obj) {
+                if (obj.Status) {
+                    $('#form').setWebControls(obj.Result);
+                }
+            }
+        });
+    }
+
+    function saveForm(index) {
+        if ($('#form').validate().form()) {
+            var postData = $('#form').getWebControls({ Id: id });
+            ys.ajax({
+                url: '@Url.Content("~/TenantManage/Tenant/SaveMyTenantInfoFormJson")',
+                type: 'post',
+                data: postData,
+                success: function (obj) {
+                    if (obj.Status) {
+                        ys.msgSuccess(obj.Message);
+                        parent.searchGrid();
+                        parent.layer.close(index);
+                    }
+                    else {
+                        ys.msgError(obj.Message);
+                    }
+                }
+            });
+        }
+    }
+</script>
+

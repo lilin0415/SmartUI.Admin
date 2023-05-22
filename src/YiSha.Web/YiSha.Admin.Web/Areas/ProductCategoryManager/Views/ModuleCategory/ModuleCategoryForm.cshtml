@@ -1,0 +1,97 @@
+﻿@{
+    Layout = "~/Views/Shared/_FormWhite.cshtml";
+}
+
+<div class="wrapper animated fadeInRight">
+    <form id="form" class="form-horizontal m">
+        <input type="hidden" id="productId" col="ProductId">
+        <input type="hidden" id="id" col="Id">
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">上级模板<font class="red"> *</font></label>
+            <div class="col-sm-8">
+                <div id="parentId" col="ParentId"></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">名称<font class="red"> *</font></label>
+            <div class="col-sm-8">
+                <input id="name" col="Name" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">备注</label>
+            <div class="col-sm-8">
+                <textarea id="remark" col="Remark" class="form-control"></textarea>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    var id = ys.request("id");
+    var productId = ys.request("productId");
+
+
+    $(function () {
+        $("#productId").val(productId);
+        $("#id").val(id);
+
+        //alert("id"+id);
+
+        $('#parentId').ysComboBoxTree({ url: '@Url.Content("~/ProductCategoryManager/ModuleCategory/GetModuleCategoryTreeListJson")' + '?id=' + id + '&productId='+ productId, async: false });
+        
+
+        getForm();
+
+        $("#form").validate({
+            rules: {
+                parentIdInput: { required: true },
+                name: { required: true }
+            }
+        });
+    });
+
+
+
+    function getForm() {
+        if (id > 0) {
+            ys.ajax({
+                url: '@Url.Content("~/ProductCategoryManager/ModuleCategory/GetFormJson")' + '?id=' + id + '&productId=' + productId,
+                type: 'get',
+                success: function (obj) {
+                    if (obj.Status) {
+                        $('#form').setWebControls(obj.Result);
+                    }
+                }
+            });
+        }
+        else {
+            var defaultData = {};
+            $('#form').setWebControls(defaultData);
+        }
+    }
+
+    function saveForm(index) {
+        if ($('#form').validate().form()) {
+            var postData = $('#form').getWebControls({ Id: id });
+            postData.ParentId = ys.getLastValue(postData.ParentId);
+            postData.ProductId = productId;
+            ys.ajax({
+                url: '@Url.Content("~/ProductCategoryManager/ModuleCategory/SaveFormJson")',
+                type: 'post',
+                data: postData,
+                success: function (obj) {
+                    if (obj.Status) {
+                        ys.msgSuccess(obj.Message);
+                        parent.searchTreeGrid();
+                        parent.layer.close(index);
+                    }
+                    else {
+                        ys.msgError(obj.Message);
+                    }
+                }
+            });
+        }
+    }
+</script>
+

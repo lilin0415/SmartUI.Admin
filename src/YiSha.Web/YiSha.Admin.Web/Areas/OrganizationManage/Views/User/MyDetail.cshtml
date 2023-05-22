@@ -1,0 +1,129 @@
+﻿@{
+    Layout = "~/Views/Shared/_FormWhite.cshtml";
+    OperatorInfo operatorInfo = ViewBag.OperatorInfo;
+}
+
+<div class="wrapper wrapper-content">
+    <div class="row animated fadeInRight">
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>个人信息</h5>
+                    <div class="ibox-tools">
+
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="profile.html#">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-user">
+                            <li><a href="javascript:showChangeUserForm()">修改信息</a></li>
+                            <li><a href="javascript:showChangePasswordForm()">修改密码</a></li>
+                            <li><a href="javascript:showUserAvatarForm()">修改头像</a></li>
+                        </ul>
+
+                    </div>
+                </div>
+                <div class="contact-box" id="userInfo">
+                    <div class="col-sm-4">
+                        <div>
+                            <img id="portrait" alt="用户头像" style="margin:0 auto;" class="img-circle m-t-xs img-responsive">
+                           
+                            <div class="m-t-xs font-bold text-center"><span col="RealName"></span></div>
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
+                        <h3><strong><span col="UserName"></span></strong></h3>
+                        @*<p><i class="fa fa-user"></i>  </p>*@
+                        <p><i class="fa fa-transgender"></i> 性别：<span col="Gender"></span> / <i class="fa fa-calendar"></i> <span col="Birthday"></span></p>
+                        <p><i class="fa fa-envelope-o"></i> <span col="Email"></span></p>
+                        <p><i class="fa fa-phone"></i> <span col="Mobile"></span></p>
+
+                        
+
+                        
+                        
+                        
+                       
+                        <div class="divider"></div>
+
+                        <p><i class="fa fa-user-secret"></i> 角色：<span>@operatorInfo.RoleNames</span></p>
+                        <p><i class="fa fa-group"></i> 部门: <span >@operatorInfo.DepartmentName</span> / 岗位：<span >@operatorInfo.PositionNames</span></p>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var id = ys.request("id");
+    $(function () {
+        
+        getForm();
+    });
+
+    function getForm() {
+        if (id > 0) {
+            ys.ajax({
+                url: '@Url.Content("~/OrganizationManage/User/GetMyDetailJson")' + '?id=' + id,
+                type: "get",
+                success: function (obj) {
+                    if (obj.Status) {
+                        var result = obj.Result;
+                        result.Gender = ys.getValueByKey(@Html.Raw(typeof(GenderTypeEnum).EnumToDictionaryString()), result.Gender);
+                        $("#userInfo").setWebControls(result);
+
+                        if (ys.isNullOrEmpty(result.Portrait)) {
+                            result.Portrait = ctx + 'image/portrait.png';
+                        }
+                        else {
+                            result.Portrait = '@GlobalContext.SystemConfig.ApiSite' + result.Portrait;
+                        }
+                        $("#portrait").attr("src", result.Portrait);
+
+                    }
+                    else
+                    {
+                        ys.msgError(obj.Message);
+                
+                    }
+                }
+            });
+        }
+    }
+
+
+
+    function showChangePasswordForm() {
+        ys.openDialog({
+            title: "修改密码",
+            content: '@Url.Content("~/OrganizationManage/User/ChangeMyPassword")',
+            callback: function (index, layero) {
+                var iframeWin = window[layero.find('iframe')[0]['name']];
+                iframeWin.saveForm(index);
+            }
+        });
+    }
+
+    function showChangeUserForm() {
+        ys.openDialog({
+            title: "修改信息",
+            content: '@Url.Content("~/OrganizationManage/User/ChangeMyDetail")' + '?id=' + id,
+            callback: function (index, layero) {
+                var iframeWin = window[layero.find('iframe')[0]['name']];
+                iframeWin.saveForm(index);
+            }
+        });
+    }
+
+    function showUserAvatarForm() {
+        ys.openDialog({
+            title: "修改头像",
+            content: '@Url.Content("~/OrganizationManage/User/UserPortrait")' + '?id=' + id,
+            callback: function (index, layero) {
+                var iframeWin = window[layero.find('iframe')[0]['name']];
+                iframeWin.saveForm(index);
+            }
+        });
+    }
+</script>

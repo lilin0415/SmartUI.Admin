@@ -1,0 +1,123 @@
+﻿@{
+    Layout = "~/Views/Shared/_FormWhite.cshtml";
+}
+
+<div class="wrapper animated fadeInRight">
+    <form id="form" class="form-horizontal m">
+        <input id="tenantId" col="TenantId" type="hidden" />
+        <input id="taskId" col="TaskId" type="hidden" />
+
+        @*<div class="form-group">
+            <label class="col-sm-3 control-label ">TenantId<font class="red"> *</font></label>
+            <div class="col-sm-8">
+                <input id="tenantId" col="TenantId" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">任务Id</label>
+            <div class="col-sm-8">
+                <input id="taskId" col="TaskId" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">执行组</label>
+            <div class="col-sm-8">
+                <input id="groupId" col="GroupId" type="text" class="form-control" />
+            </div>
+        </div>*@
+        
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">@(GlobalContext.SystemConfig.CaseName)</label>
+            <div class="col-sm-8">
+                @*<input id="caseId" col="CaseId" type="text" class="form-control" />*@
+                <div id="caseId" col="CaseId"></div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">ProjectGuid</label>
+            <div class="col-sm-8">
+                <input id="projectGuid" col="ProjectGuid" type="text" class="form-control" />
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    var id = ys.request("id");
+    var taskId = ys.request("taskId");
+    var envId = ys.request("envId");
+
+    $(function () {
+        
+        getForm();
+
+        $("#taskId").val(taskId);
+
+        $('#form').validate({
+            rules: {
+                tenantId: { required: true }
+            }
+        });
+    });
+
+    //选择执行用例
+    $('#caseId').ysComboBoxTree({
+        url: '@Url.Content("~/TestCaseManager/TestCase/GetCaseTreeListJson")'+'?envId='+envId,
+        callback: {
+            customOnClick: function (event, treeId, treeNode) {
+                
+                $("#caseId").val(treeNode.tag.CaseId);
+                
+                $("#projectGuid").val(treeNode.tag.ProjectGuid);
+
+                //if (ys.isNullOrEmpty($("#name").val())) {
+                //    $("#name").val(treeNode.tag.Name);
+                //}
+                console.log(treeNode);
+
+                //initSpecialVersion(treeNode.tag.ProjectGuid);
+            },
+        },
+
+    });
+    function getForm() {
+        if (id > 0) {
+            ys.ajax({
+                url: '@Url.Content("~/TestTaskManager/TestTaskItem/GetFormJson")' + '?id=' + id,
+                type: 'get',
+                success: function (obj) {
+                    if (obj.Status) {
+                        $('#form').setWebControls(obj.Result);
+                    }
+                }
+            });
+        }
+        else {
+            var defaultData = {};
+            $('#form').setWebControls(defaultData);
+        }
+    }
+
+    function saveForm(index) {
+        if ($('#form').validate().form()) {
+            var postData = $('#form').getWebControls({ Id: id });
+            ys.ajax({
+                url: '@Url.Content("~/TestTaskManager/TestTaskItem/SaveFormJson")',
+                type: 'post',
+                data: postData,
+                success: function (obj) {
+                    if (obj.Status) {
+                        ys.msgSuccess(obj.Message);
+                        parent.searchGrid();
+                        parent.layer.close(index);
+                    }
+                    else {
+                        ys.msgError(obj.Message);
+                    }
+                }
+            });
+        }
+    }
+</script>
+

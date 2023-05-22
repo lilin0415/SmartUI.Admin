@@ -1,0 +1,55 @@
+﻿@using YiSha.Util.Model;
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostingEnvironment
+@{
+    
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<div id="wrapper" style="background-color:transparent;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <button class="btn btn-success btn-block" onclick="install(); return false;">安装</button>
+                @if (!GlobalContext.SystemConfig.IsReleased)
+                {
+                    <button class="btn btn-success btn-block" onclick="makeInstallSql(); return false;">制作安装脚本</button>
+                }
+                
+            </div>
+        </div>
+      
+    </div>
+</div>
+<script type="text/javascript">
+    function install() {
+        ys.ajax({
+            url: '@Url.Content("~/Install/InstallJson")',
+            type: "post",
+            data: [],
+            success: function (obj) {
+                if (obj.Status) {
+                    ys.msgSuccess(obj.Message);
+                }
+                else {
+                    ys.msgError(obj.Message);
+                }
+            }
+        });
+    }
+    function makeInstallSql() {
+        ys.ajax({
+            url: '@Url.Content("~/Install/MakeInstallSqlJson")',
+            type: "post",
+            data: [],
+            success: function (obj) {
+                if (obj.Status) {
+                    ys.msgSuccess(obj.Message);
+                }
+                else {
+                    ys.msgError(obj.Message);
+                }
+            }
+        });
+    }
+</script>

@@ -1,0 +1,334 @@
+﻿@{
+    Layout = "~/Views/Shared/_Index.cshtml";
+ }
+<div class="container-div">
+    <div class="row">
+        <div id="searchDiv" class="col-sm-12  hidden-xs">
+            <div class="select-list">
+                <ul>
+                    
+                    <li>
+                        作业ID：<input id="guid" col="Guid" type="text" />
+                    </li>
+                    <li>
+                        任务ID：<input id="taskExecGuid" col="TaskExecGuid" type="text" />
+                    </li>
+                  @*  <li>
+                        任务名称：<input id="taskExecName" col="TaskExecName" type="text" />
+                    </li>*@
+                    <li>
+                        @(GlobalContext.SystemConfig.CaseName)编码：<input id="caseCode" col="CaseCode" type="text" />
+                    </li>
+                    <li>
+                        @(GlobalContext.SystemConfig.CaseName)名称：<input id="caseName" col="CaseName" type="text" />
+                    </li>
+                    <li>
+                        <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+       @* <div class="btn-group-sm hidden-xs" id="toolbar">
+            <a id="btnAdd" class="btn btn-success" onclick="showSaveForm(true)"><i class="fa fa-plus"></i> 新增</a>
+            <a id="btnEdit" class="btn btn-primary disabled" onclick="showSaveForm(false)"><i class="fa fa-edit"></i> 修改</a>
+            <a id="btnDelete" class="btn btn-danger disabled" onclick="deleteForm()"><i class="fa fa-remove"></i> 删除</a>
+        </div>*@
+        <div class="col-sm-12 select-table table-striped">
+            <table id="gridTable" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var taskExecId = ys.request("taskExecGuid");
+    $(function () {
+        $("#taskExecGuid").val(taskExecId);
+        initGrid();
+    });
+
+    function initGrid() {
+        var queryUrl = '@Url.Content("~/TestTaskManager/CaseExecRecord/GetPageListJson")';
+        $('#gridTable').ysTable({
+            url: queryUrl,
+            toolbar: '#searchDiv',
+            columns: [
+                { checkbox: true, visible: false },
+               
+                //{ field: 'TaskId', title: 'TaskId' },
+                { field: 'Guid', title: '作业ID', width: '120px', visible: true },
+               
+                //TaskExecName
+               
+                //{ field: 'CaseId', title: '@(GlobalContext.SystemConfig.CaseName)ID', width: '120px', visible: false },
+                { field: 'Code', title: '@(GlobalContext.SystemConfig.CaseName)编码', visible: false },
+                { field: 'Name', title: '@(GlobalContext.SystemConfig.CaseName)名称' },
+                //{ field: 'TaskExecGuid', title: '任务ID', width: '120px', visible: false },
+                //{ field: 'TaskExecName', title: '任务名称', visible: true },
+             
+                {
+                    field: 'CompositeStatus', title: '状态', width: '40px', formatter: function (value, row, index) {
+                        if (row.ExecStatus == "@ExecStatusEnumType.Ready.ParseToInt()") {
+                            return '<span class="badge badge-white">' + "待执行" + '</span>';
+
+                            //if (row.IsConsumed == 1) {
+                            //    return '<span class="badge badge-inverse">' + "队列中..." + '</span>';
+                            //}
+                            //else
+                            //{
+                            //    return '<span class="badge badge-white">' + "@ExecStatusEnumType.Ready.GetDescription()" + '</span>';
+                            //}
+
+                        }
+                        //if (row.CompositeStatus == "@CompositeStatusEnumType.Ready.ParseToInt()") {
+                        //    return '<span class="badge badge-white">' + "@CompositeStatusEnumType.Ready.GetDescription()" + '</span>';
+                        //}
+                        else if (row.CompositeStatus == "@CompositeStatusEnumType.Initing.ParseToInt()") {
+                            return '<span class="badge badge-info">' + "@CompositeStatusEnumType.Initing.GetDescription()" + '</span>';
+                        }
+                        else if (row.CompositeStatus == "@CompositeStatusEnumType.Running.ParseToInt()") {
+                            return '<span class="badge badge-primary">' + "@CompositeStatusEnumType.Running.GetDescription()" + '</span>';
+                        }
+                        else if (row.CompositeStatus == "@CompositeStatusEnumType.Paused.ParseToInt()") {
+                            return '<span class="badge badge-disable">' + "@CompositeStatusEnumType.Paused.GetDescription()" + '</span>';
+                        }
+                        //else if (row.CompositeStatus == "@CompositeStatusEnumType.Finished.ParseToInt()") {
+                        //    return '<span class="badge">' + "@CompositeStatusEnumType.Finished.GetDescription()" + '</span>';
+                        //}
+                        else if (row.CompositeStatus == "@CompositeStatusEnumType.Succeed.ParseToInt()") {
+                            return '<span class="badge badge-success">' + "@CompositeStatusEnumType.Succeed.GetDescription()" + '</span>';
+                        }
+                        else if (row.CompositeStatus == "@CompositeStatusEnumType.Failed.ParseToInt()") {
+                            return '<span class="badge badge-danger">' + "@CompositeStatusEnumType.Failed.GetDescription()" + '</span>';
+                        }
+                        else if (row.CompositeStatus == "@CompositeStatusEnumType.Cancelled.ParseToInt()") {
+                            return '<span class="badge badge-warning">' + "@CompositeStatusEnumType.Cancelled.GetDescription()" + '</span>';
+                        }
+                        else if (row.CompositeStatus == "@CompositeStatusEnumType.Aborted.ParseToInt()") {
+                            return '<span class="badge badge-warning">' + "@CompositeStatusEnumType.Aborted.GetDescription()" + '</span>';
+                        }
+                    }
+                },
+               
+                {
+                    field: 'Reason', title: '结果'
+                    , cellStyle: function (value, row, index) {
+                        return {
+                            css:{
+                                //"min-width": "40px",
+                                "white-space": "nowrap",
+                                "text-overflow": "ellipsis",
+                                "overflow": "hidden",
+                                "max-width": "60px"
+                            }
+                        };
+                    }
+                    , formatter: function (value, row, index) {
+                        if(value==null)
+                        {
+                            return '-';
+                        }
+                        //获取备注内容
+                        var value = "" + value + "";
+                        //自定义单元格内容
+                        var span = document.createElement('span');
+                        //写入面板标题
+                        span.setAttribute('title', value);
+                        //写入面板内容
+                        span.innerHTML = value;
+                        //将面板返回至单元格展示
+                        return span.outerHTML;
+                        
+                    }
+                },
+                { field: 'SucceedAssertionCount', title: '成功断言', width: '40px' },
+                { field: 'FailedAssertionCount', title: '失败断言', width: '40px' },
+                { field: 'TotalAssertionCount', title: '总断言', width: '40px', visible: false },
+                {
+                    field: 'ConsumerDisplayName', title: '推送模式', width: '60px', formatter: function (value, row, index) {
+                        
+                        if (row.ConsumeMode == "@TaskConsumeModeEnumType.All.ParseToInt()") {
+                            return "";
+                            //return "@TaskConsumeModeEnumType.All.GetDescription()";
+                        }
+                        else if (row.ConsumeMode == "@TaskConsumeModeEnumType.SingleClient.ParseToInt()") {
+                            return '<a href="javascript:openViewConsumerPage(\'' + row.ConsumeMode + '\',\'' + row.ConsumerId + '\')">' + "@TaskConsumeModeEnumType.SingleClient.GetDescription()" + '</a>';
+                        }
+                        else if (row.ConsumeMode == "@TaskConsumeModeEnumType.ClientGroup.ParseToInt()") {
+                            return '<a href="javascript:openViewConsumerPage(\'' + row.ConsumeMode + '\',\'' + row.ConsumerId + '\')">' + "@TaskConsumeModeEnumType.ClientGroup.GetDescription()" + '</a>';
+                        }
+                       
+                    }
+                },
+                {
+                    field: 'ConsumeStatus', title: '推送状态', width: '40px', visible: false, formatter: function (value, row, index) {
+                        if (row.ConsumeStatus == "@ConsumeStatusEnumType.Ready.ParseToInt()") {
+                            return '<span class="badge badge-white">' + "@ConsumeStatusEnumType.Ready.GetDescription()" + '</span>';
+                        } else if (row.ConsumeStatus == "@ConsumeStatusEnumType.Consumed.ParseToInt()") {
+                            return '<span class="badge badge-success">' + "@ConsumeStatusEnumType.Consumed.GetDescription()" + '</span>';
+                        }
+                         else if (row.ConsumeStatus == "@ConsumeStatusEnumType.Cancelled.ParseToInt()") {
+                            return '<span class="badge badge-warning">' + "@ConsumeStatusEnumType.Cancelled.GetDescription()" + '</span>';
+                        } else if (row.ConsumeStatus == "@ConsumeStatusEnumType.Pending.ParseToInt()") {
+                            return '<span class="badge badge-warning">' + "@ConsumeStatusEnumType.Pending.GetDescription()" + '</span>';
+                        }
+                        else if (row.ConsumeStatus == "@ConsumeStatusEnumType.Invalid.ParseToInt()") {
+                            return '<span class="badge badge-warning">' + "@ConsumeStatusEnumType.Invalid.GetDescription()" + '</span>';
+                        }
+                    }
+                },
+                {
+                    field: 'ConsumedTime', title: '推送时间', width: '135px', formatter: function (value, row, index) {
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+             
+                {
+                    field: 'StartTime', title: '开始时间', width: '135px', formatter: function (value, row, index) {
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+                {
+                    field: 'EndTime', title: '结束时间', width: '135px', formatter: function (value, row, index) {
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+                { field: 'UserName', title: '客户端用户', width: '40px' },
+                { field: 'AppVersion', title: '客户端版本', width: '40px', visible: false },
+                { field: 'DeviceName', title: '计算机名称', width: '140px' },
+                { field: 'DeviceIP', title: 'IP', width: '100px', visible: false },
+                { field: 'CreatorUserName', title: '创建人', width: '40px', visible: false },
+                {
+                    field: 'BaseCreateTime', title: '创建时间', width: '135px', formatter: function (value, row, index) {
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+                //{ field: 'BaseModifyTime', title: '修改时间' },
+                {
+                    title: '操作',
+                    align: 'center',
+                    width: '120px',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        if (row.FinishStatus == "@FinishStatusEnumType.None.ParseToInt()") {
+                            actions.push('<a class="btn btn-primary btn-xs" href="#" onclick="cancelJob(\'' + row.Id + '\')" ><i class="fa fa-pause-circle-o"></i>取消</a> ');
+                        }
+                        actions.push('<a class="btn btn-primary btn-xs" href="#" onclick="openLog(\'' + row.Id + '\')" ><i class="fa fa-pause-circle-o"></i>日志</a> ');
+                        return actions.join('');
+                    }
+                }
+            ],
+            queryParams: function (params) {
+                var pagination = $('#gridTable').ysTable('getPagination', params);
+                var queryString = $('#searchDiv').getWebControls(pagination);
+                return queryString;
+            }
+        });
+    }
+
+    function searchGrid() {
+        $('#gridTable').ysTable('search');
+        resetToolbarStatus();
+    }
+
+    function showSaveForm(bAdd) {
+        var id = 0;
+        if (!bAdd) {
+            var selectedRow = $('#gridTable').bootstrapTable('getSelections');
+            if (!ys.checkRowEdit(selectedRow)) {
+                return;
+            }
+            else {
+                id = selectedRow[0].Id;
+            }
+        }
+        ys.openDialog({
+            title: id > 0 ? '编辑' : '添加',
+            content: '@Url.Content("~/TestTaskManager/CaseExecRecord/CaseExecRecordForm")' + '?id=' + id,
+            width: '768px',
+            height: '550px',
+            callback: function (index, layero) {
+                var iframeWin = window[layero.find('iframe')[0]['name']];
+                iframeWin.saveForm(index);
+            }
+        });
+    }
+
+    function deleteForm() {
+        var selectedRow = $('#gridTable').bootstrapTable('getSelections');
+        if (ys.checkRowDelete(selectedRow)) {
+            ys.confirm('确认要删除选中的' + selectedRow.length + '条数据吗？', function () {
+                var ids = ys.getIds(selectedRow);
+                ys.ajax({
+                    url: '@Url.Content("~/TestTaskManager/CaseExecRecord/DeleteFormJson")' + '?ids=' + ids,
+                    type: 'post',
+                    success: function (obj) {
+                        if (obj.Status) {
+                            ys.msgSuccess(obj.Message);
+                            searchGrid();
+                        }
+                        else {
+                            ys.msgError(obj.Message);
+                        }
+                    }
+                });
+            });
+        }
+    }
+    function cancelJob(id) {
+        ys.confirm('确认要取消选中的作业吗吗？', function () {
+            ys.ajax({
+                url: '@Url.Content("~/TestTaskManager/CaseExecRecord/CancelJobJson")' + '?id=' + id,
+                type: 'post',
+                success: function (obj) {
+                    if (obj.Status) {
+                        ys.msgSuccess(obj.Message);
+                        searchGrid();
+                    }
+                    else {
+                        ys.msgError(obj.Message);
+                    }
+                }
+            });
+        });
+    }
+
+    function openLog(id) {
+        ys.openDialog({
+            title:'运行日志',
+            content: '@Url.Content("~/TestTaskManager/CaseExecLog/CaseExecLogIndex")' + '?caseExecId=' + id,
+
+            moveOut: true,
+            maxWidth: true,
+            btn: '关闭',
+            yes: function (index, layero) {
+                //按钮【按钮一】的回调
+
+            },
+            callback: function (index, layero) {
+                //var iframeWin = window[layero.find('iframe')[0]['name']];
+                //iframeWin.saveForm(index);
+
+                console.log(layero);
+                layer.close(index);
+            }
+        });
+    }
+    function openViewConsumerPage(consumeMode, consumerId) {
+       
+        ys.openDialog({
+            title: consumeMode === '1' ? '查看客户端' : '查看客户端组',
+            content: '@Url.Content("~/TestTaskManager/CaseExecRecord/ViewConsumerIndex")' + '?consumeMode=' + consumeMode + '&consumerId=' + consumerId,
+            moveOut: true,
+            maxWidth: true,
+
+            shadeClose: true,
+            callback: function (index, layero) {
+                var childFrame = parent.window[layero.find('iframe')[0]['name']];
+                parent.layer.close(index);
+                console.log(index);
+
+
+            }
+        });
+    }
+</script>

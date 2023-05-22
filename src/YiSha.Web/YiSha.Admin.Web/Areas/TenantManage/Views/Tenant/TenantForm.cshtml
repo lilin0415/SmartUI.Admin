@@ -1,0 +1,127 @@
+﻿@{
+    Layout = "~/Views/Shared/_FormWhite.cshtml";
+}
+
+<div class="wrapper animated fadeInRight">
+    <form id="form" class="form-horizontal m">
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">编码<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="code" col="Code" type="text" class="form-control" />
+            </div>
+            <label class="col-sm-2 control-label ">名称<font class="red"> *</font></label>
+            <div class="col-sm-4">
+                <input id="name" col="Name" type="text" class="form-control" />
+            </div>
+        </div>
+       
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">简称</label>
+            <div class="col-sm-4">
+                <input id="shortName" col="ShortName" type="text" class="form-control" />
+            </div>
+            <label class="col-sm-2 control-label ">联系人</label>
+            <div class="col-sm-4">
+                <input id="contact" col="Contact" type="text" class="form-control" />
+            </div>
+        </div>
+     
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">电话</label>
+            <div class="col-sm-4">
+                <input id="phone" col="Phone" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">备注</label>
+            <div class="col-sm-10">
+                <textarea id="remark" col="Remark" class="form-control" style="height:60px"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label ">可见性</label>
+            <div class="col-sm-4">
+                <div id="visibleScope" col="VisibleScope" type="text" ></div>
+            </div>
+         
+        </div>
+          <div class="form-group">
+          
+            <label class="col-sm-2 control-label ">用户加入方式</label>
+            <div class="col-sm-10">
+                <div id="allowJoinType" col="AllowJoinType" type="text" ></div>
+            </div>
+        </div>
+      
+    </form>
+</div>
+
+<script type="text/javascript">
+    var id = ys.request("id");
+    $(function () {
+
+        $("#visibleScope").ysRadioBox({ data: ys.getJson(@Html.Raw(typeof(VisibleScopeEnumType).EnumToDictionaryString())), default: '1' });
+        $("#allowJoinType").ysRadioBox({ data: ys.getJson(@Html.Raw(typeof(AllowJoinTypeEnumType).EnumToDictionaryString())), default: '1' });
+
+     
+
+
+        getForm();
+
+        $('#form').validate({
+            rules: {
+                code: { required: true },
+                name: { required: true }
+            }
+        });
+    });
+
+    function getForm() {
+        if (id > 0) {
+            ys.ajax({
+                url: '@Url.Content("~/TenantManage/Tenant/GetFormJson")' + '?id=' + id,
+                type: 'get',
+                success: function (obj) {
+                    if (obj.Status) {
+                        $('#form').setWebControls(obj.Result);
+                    }
+                }
+            });
+        }
+        else {
+            var defaultData = {};
+            $('#form').setWebControls(defaultData);
+        }
+    }
+
+    function saveForm(index) {
+        if ($('#form').validate().form()) {
+            var postData = $('#form').getWebControls({ Id: id });
+            ys.ajax({
+                url: '@Url.Content("~/TenantManage/Tenant/SaveFormJson")',
+                type: 'post',
+                data: postData,
+                success: function (obj) {
+                    if (obj.Status) {
+                        ys.msgSuccess(obj.Message);
+                        if (typeof parent.searchGrid === 'function')
+                        {
+                            parent.searchGrid();
+                        }
+                        
+                        parent.layer.close(index);
+                        redirectToIndex();
+                    }
+                    else {
+                        ys.msgError(obj.Message);
+                    }
+                }
+            });
+        }
+    }
+
+    function redirectToIndex() {
+        location.href = '@Url.Content("~/Home/Index")';
+    }
+</script>
+
