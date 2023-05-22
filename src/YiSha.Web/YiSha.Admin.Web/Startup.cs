@@ -124,12 +124,8 @@ namespace YiSha.Admin.Web
                 options.SerializerSettings.ContractResolver = new DefaultContractResolver();
             });
 
-            var dataProtectionDir = GlobalContext.GetAppData("DataProtection");
-            if (!Directory.Exists(dataProtectionDir))
-            {
-                Directory.CreateDirectory(dataProtectionDir);
-            }
-
+            var dataProtectionDir = GlobalContext.GetAppDataFolder("DataProtection");
+          
 			services.AddDataProtection().PersistKeysToFileSystem(new DirectoryInfo(dataProtectionDir));
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);  // 注册Encoding
