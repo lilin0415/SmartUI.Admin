@@ -12,5 +12,9 @@
     <ProjectReference Include="..\..\YiSha.Data\YiSha.Data.Repository\YiSha.Data.Repository.csproj" />
     <ProjectReference Include="..\..\YiSha.Util\YiSha.Util\YiSha.Util.csproj" />
   </ItemGroup>
-  
+	<ItemGroup>
+		<Reference Include="Koo.Utilities">
+			<HintPath>..\..\Libs\Koo.Utilities.dll</HintPath>
+		</Reference>
+	</ItemGroup>
 </Project>

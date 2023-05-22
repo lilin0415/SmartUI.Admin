@@ -35,5 +35,9 @@
     <PackageReference Include="MySqlBackup.NET" Version="2.3.8" />
     <PackageReference Include="Quartz" Version="3.0.7" />
   </ItemGroup>
-
+	<ItemGroup>
+		<Reference Include="Koo.Utilities">
+			<HintPath>..\..\Libs\Koo.Utilities.dll</HintPath>
+		</Reference>
+	</ItemGroup>
 </Project>

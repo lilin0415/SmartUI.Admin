@@ -14,5 +14,9 @@
     <ProjectReference Include="..\YiSha.Business\YiSha.Business.csproj" />
     <ProjectReference Include="..\YiSha.Service\YiSha.Service.csproj" />
   </ItemGroup>
-
+	<ItemGroup>
+		<Reference Include="Koo.Utilities">
+			<HintPath>..\..\Libs\Koo.Utilities.dll</HintPath>
+		</Reference>
+	</ItemGroup>
 </Project>

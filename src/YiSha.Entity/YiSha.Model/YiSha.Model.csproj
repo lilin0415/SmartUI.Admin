@@ -20,10 +20,13 @@
     <Folder Include="Param\ToolManage\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\..\Libs\Json\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup>
+		<Reference Include="Koo.Utilities">
+			<HintPath>..\..\Libs\Koo.Utilities.dll</HintPath>
+		</Reference>
+		<Reference Include="Newtonsoft.Json">
+			<HintPath>..\..\Libs\Newtonsoft.Json.dll</HintPath>
+		</Reference>
+	</ItemGroup>
 
 </Project>

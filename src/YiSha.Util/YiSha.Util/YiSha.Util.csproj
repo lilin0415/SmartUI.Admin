@@ -13,12 +13,18 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.9.2" />
-    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
+    <PackageReference Include="NPOI" Version="2.6.0" />
+    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Koo\Koo.Utilities\Koo.Utilities.csproj" />
     <ProjectReference Include="..\..\YiSha.Entity\YiSha.Enum\YiSha.Enum.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Koo.Utilities">
+      <HintPath>..\..\Libs\Koo.Utilities.dll</HintPath>
+    </Reference>
   </ItemGroup>
   
 </Project>

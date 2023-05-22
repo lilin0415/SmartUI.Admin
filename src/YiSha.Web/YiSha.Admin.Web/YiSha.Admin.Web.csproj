@@ -78,6 +78,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="Koo.Utilities">
+      <HintPath>..\..\Libs\Koo.Utilities.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="AppData\install\tables\caseexeclog.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
