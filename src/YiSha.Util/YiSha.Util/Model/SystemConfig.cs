@@ -11,7 +11,7 @@ namespace YiSha.Util.Model
       
 
         public const string CompayName = "毫木软件";
-        public const string CompayUrl = "#";
+        public const string CompayUrl = "http://www.haomusoft.com";
 
         public const string ProductName = "新石器自动化测试系统";
         public const string ProductFullName = "新石器自动化测试系统";
