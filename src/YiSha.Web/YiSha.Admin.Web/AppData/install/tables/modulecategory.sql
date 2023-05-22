@@ -1,5 +1,5 @@
 ﻿-- MySqlBackup.NET 2.3.8.0
--- Dump Time: 2023-05-21 16:06:45
+-- Dump Time: 2023-05-23 06:56:20
 -- --------------------------------------
 -- Server version 5.7.36 MySQL Community Server (GPL)
 
@@ -53,5 +53,5 @@ INSERT INTO `modulecategory`(`Id`,`ProductId`,`ParentId`,`Name`,`Remark`,`IsEnab
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 
--- Dump completed on 2023-05-21 16:06:45
--- Total time: 0:0:0:0:154 (d:h:m:s:ms)
+-- Dump completed on 2023-05-23 06:56:21
+-- Total time: 0:0:0:0:131 (d:h:m:s:ms)

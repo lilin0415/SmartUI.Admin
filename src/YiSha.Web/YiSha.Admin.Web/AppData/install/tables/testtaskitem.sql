@@ -1,5 +1,5 @@
 ﻿-- MySqlBackup.NET 2.3.8.0
--- Dump Time: 2023-05-21 16:06:49
+-- Dump Time: 2023-05-23 06:56:23
 -- --------------------------------------
 -- Server version 5.7.36 MySQL Community Server (GPL)
 
@@ -54,5 +54,5 @@ INSERT INTO `testtaskitem`(`Id`,`TaskId`,`GroupId`,`CaseId`,`ProjectGuid`,`SortN
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 
--- Dump completed on 2023-05-21 16:06:49
--- Total time: 0:0:0:0:105 (d:h:m:s:ms)
+-- Dump completed on 2023-05-23 06:56:24
+-- Total time: 0:0:0:0:96 (d:h:m:s:ms)

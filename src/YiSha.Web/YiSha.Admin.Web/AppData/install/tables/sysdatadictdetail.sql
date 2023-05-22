@@ -1,5 +1,5 @@
 ﻿-- MySqlBackup.NET 2.3.8.0
--- Dump Time: 2023-05-21 16:06:47
+-- Dump Time: 2023-05-23 06:56:22
 -- --------------------------------------
 -- Server version 5.7.36 MySQL Community Server (GPL)
 
@@ -57,5 +57,5 @@ INSERT INTO `sysdatadictdetail`(`Id`,`BaseIsDelete`,`BaseCreateTime`,`BaseModify
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 
--- Dump completed on 2023-05-21 16:06:47
--- Total time: 0:0:0:0:146 (d:h:m:s:ms)
+-- Dump completed on 2023-05-23 06:56:22
+-- Total time: 0:0:0:0:97 (d:h:m:s:ms)
