@@ -209,7 +209,7 @@ namespace YiSha.Service.SystemManage
         public async Task<string> DatabaseBackup(string database)
         {
             var fileName = $"{database}_{DateTime.Now.ToString("yyyyMMddHHmmss")}.bak";
-            string backupFile = GlobalContext.GetAppData("backup_db", fileName);
+            string backupFile = GlobalContext.GetAppDataFile("backup_db", fileName);
 
             bool succeed=false;
             var conn = this.BaseRepository().db.dbContext.Database.GetDbConnection();

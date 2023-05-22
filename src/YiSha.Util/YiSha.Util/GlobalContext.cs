@@ -81,6 +81,21 @@ namespace YiSha.Util
             }
             return ret;
         }
+        public static string GetAppDataFolder(params string[] pathes)
+        {
+            var path = GetAppData(pathes);
+            FileHelper.EnsureDirectory(path);
+            return path;
+        }
+
+        public static string GetAppDataFile(params string[] pathes)
+        {
+            var path = GetAppData(pathes);
+
+            var dir = FileHelper.GetParentPath(path);
+            FileHelper.EnsureDirectory(dir);
+            return path;
+        }
 
         public static string GetAppData(params string[] pathes)
         {
@@ -96,17 +111,7 @@ namespace YiSha.Util
                 items.Add(GlobalContext.HostingEnvironment.ContentRootPath);
                 items.Add("AppData");
                 items.AddRange(pathes);
-
-                var path= Path.Combine(items.ToArray());
-                if (FileHelper.IsFilePath(path))
-                {
-                    var dir = FileHelper.GetParentPath(path);
-                    FileHelper.EnsureDirectory(dir);
-                }
-                else
-                {
-                    FileHelper.EnsureDirectory(path);
-                }
+                var path = Path.Combine(items.ToArray());
                 return path;
             }
         }

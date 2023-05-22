@@ -75,7 +75,7 @@ namespace YiSha.Service.SystemManage
         public async Task<string> DatabaseBackup(string database)
         {
             var fileName = $"{database}_{DateTime.Now.ToString("yyyyMMddHHmmss")}.bak";
-            string backupFile = GlobalContext.GetAppData("backup_db", fileName);
+            string backupFile = GlobalContext.GetAppDataFile("backup_db", fileName);
 
             string strSql = string.Format(" backup database [{0}] to disk = '{1}'", database, backupFile);
             var result = await this.BaseRepository().ExecuteBySql(strSql);
