@@ -13,6 +13,7 @@
 1、新建一个mysql数据库  
 2、修改appsettings.json（目录:src\YiSha.Web\YiSha.Admin.Web）中数据库相关配置  
 3、运行，输入url地址 http://localhost/install/index，点击安装即可  
+4、管理员：admin/123456 
 
 ## 功能列表
 ### 测试相关功能
