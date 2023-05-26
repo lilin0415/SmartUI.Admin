@@ -3,14 +3,12 @@
 它借鉴了市场上主流的自动化软件的优点，采用设计器、执行器和控制器“三合一”的架构模式。提供包括脚本录制、开发、编写、调试；测试用例与测试计划的制定、执行；用例运行结果及日志的汇总、分析，自动生成各种维度的测试报告等功能。
 帮助企业解决日常测试管理过程中遇到的资产管理、测试效率、测试质量的问题，降低企业研发成本，提高产品质量，助力企业实现数字化、智能化升级转型。  
 
-注：此系统基于[YiShaAdmin](https://github.com/liukuo362573/YiShaAdmin)实现，除了修复众多的bug之后，还增加了很多额外的功能，如打包、安装；角色分类；api接口及用户token等等。另外也很感谢YiShaAdmin的作者对开源做出的贡献。
-
 ## 在线体验
 - 地址：http://62.234.16.106/  
 - 用户/密码：demo/123456
 
 ## 使用交流
-- QQ 交流群：151492505
+- QQ 交流群：151492505  
 
 ## 安装说明
 1、新建一个mysql数据库  
@@ -23,7 +21,7 @@
 ![输入图片说明](screenshots/studio.png)
 ![输入图片说明](screenshots/execution.png)
 ![输入图片说明](screenshots/client.png)
-![输入图片说明](screenshots/control.png)
+![输入图片说明](screenshots/control.png)  
 
 ## 功能列表
 ### 测试相关功能
@@ -56,6 +54,8 @@
 - 代码生成：快速生成对单表的增删改查
 - 打包&安装：自动生成安装所需要的脚本，然后在部署的时候可直接安装
 
+## 链接
+此系统基于[YiShaAdmin](https://github.com/liukuo362573/YiShaAdmin)实现，除了修复众多的bug之后，还增加了很多额外的功能，如打包、安装；角色分类；api接口及用户token等等。另外也很感谢YiShaAdmin的作者对开源做出的贡献。
 
 ## License
 [MIT](https://github.com/lilin0415/SmartUI.Admin/blob/master/LICENSE)  
