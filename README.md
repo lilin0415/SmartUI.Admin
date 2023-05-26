@@ -9,7 +9,10 @@
 - 地址：http://62.234.16.106/  
 - 用户/密码：demo/123456
 
-## 安装使用
+## 使用交流
+- QQ 交流群：151492505
+
+## 安装体验
 1、新建一个mysql数据库  
 2、修改appsettings.json（目录:src\YiSha.Web\YiSha.Admin.Web）中数据库相关配置  
 3、运行，输入url地址 http://localhost/install/index，点击安装即可  
@@ -53,8 +56,6 @@
 - 代码生成：快速生成对单表的增删改查
 - 打包&安装：自动生成安装所需要的脚本，然后在部署的时候可直接安装
 
-## 联系作者
-- QQ 交流群：151492505
 
 ## License
 [MIT](https://github.com/lilin0415/SmartUI.Admin/blob/master/LICENSE)  
