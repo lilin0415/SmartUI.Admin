@@ -47,7 +47,7 @@
 - 打包&安装：自动生成安装所需要的脚本，然后在部署的时候可直接安装
 
 ## 联系作者
-- QQ 交流群：312769914
+- QQ 交流群：151492505
 
 ## License
 [MIT](https://github.com/lilin0415/SmartUI.Admin/blob/master/LICENSE)  
