@@ -12,7 +12,7 @@
 ## 使用交流
 - QQ 交流群：151492505
 
-## 安装体验
+## 安装说明
 1、新建一个mysql数据库  
 2、修改appsettings.json（目录:src\YiSha.Web\YiSha.Admin.Web）中数据库相关配置  
 3、运行，输入url地址 http://localhost/install/index，点击安装即可  
