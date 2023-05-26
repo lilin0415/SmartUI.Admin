@@ -15,6 +15,13 @@
 3、运行，输入url地址 http://localhost/install/index，点击安装即可  
 4、管理员：admin/123456 
 
+## 部分截图
+![输入图片说明](screenshots/home.png)
+![输入图片说明](screenshots/studio.png)
+![输入图片说明](screenshots/execution.png)
+![输入图片说明](screenshots/client.png)
+![输入图片说明](screenshots/control.png)
+
 ## 功能列表
 ### 测试相关功能
 - 产品管理：用于管理需要测试的项目、产品
