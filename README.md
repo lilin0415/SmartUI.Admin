@@ -2,7 +2,7 @@
 Neolithic  is an integrated testing framework powered by Selenium/WebDriver 、Appium、FlaUI.  It is a complete testing solution which support Web、Mobile(Android/IOS) and Desktop GUI Programs  
 ### Supported   Browsers  
 Chrome、Firefox、Edge、Safari、IE  
-### Supported Mobile  
+### Supported Mobiles  
 Android、IOS  
 ### Windows applications   
 Win32,、WinForms,、WPF、Store Apps ...  
@@ -16,29 +16,27 @@ Android、IOS
 ### 桌面软件 
 Win32,、WinForms,、WPF、Store Apps ...  
 
-
-
-## 在线体验
+## Online demo(在线体验)  
 - 地址：http://62.234.16.106/  
 - 用户/密码：demo/123456
 
 ## 使用交流
 - QQ 交流群：151492505  
 
-## 安装说明
+## how to install(安装说明)  
 1、新建一个mysql数据库  
 2、修改appsettings.json（目录:src\YiSha.Web\YiSha.Admin.Web）中数据库相关配置  
 3、运行，输入url地址 http://localhost/install/index，点击安装即可  
 4、管理员：admin/123456 
 
-## 部分截图
+## screenshots(部分截图)  
 ![输入图片说明](screenshots/home.png)
 ![输入图片说明](screenshots/studio.png)
 ![输入图片说明](screenshots/execution.png)
 ![输入图片说明](screenshots/client.png)
 ![输入图片说明](screenshots/control.png)  
 
-## 功能列表
+## features(功能列表)  
 ### 测试相关功能
 - 产品管理：用于管理需要测试的项目、产品
 - 功能模块：设置各个项目中需要测试的功能及模块
@@ -69,7 +67,7 @@ Win32,、WinForms,、WPF、Store Apps ...
 - 代码生成：快速生成对单表的增删改查
 - 打包&安装：自动生成安装所需要的脚本，然后在部署的时候可直接安装
 
-## 链接
+## Links(链接)  
 [Selenium](https://github.com/SeleniumHQ/selenium)  
 [Appium](https://github.com/appium/appium)  
 [FlaUI](https://github.com/FlaUI/FlaUI)  
