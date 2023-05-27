@@ -20,23 +20,23 @@ Win32,、WinForms,、WPF、Store Apps ...
 - 地址：http://62.234.16.106/  
 - 用户/密码：demo/123456
 
-## 使用交流
+## Chat(使用交流)  
 - QQ 交流群：151492505  
 
-## how to install(安装说明)  
+## How to install(安装说明)  
 1、新建一个mysql数据库  
 2、修改appsettings.json（目录:src\YiSha.Web\YiSha.Admin.Web）中数据库相关配置  
 3、运行，输入url地址 http://localhost/install/index，点击安装即可  
 4、管理员：admin/123456 
 
-## screenshots(部分截图)  
+## Screenshots(部分截图)  
 ![输入图片说明](screenshots/home.png)
 ![输入图片说明](screenshots/studio.png)
 ![输入图片说明](screenshots/execution.png)
 ![输入图片说明](screenshots/client.png)
 ![输入图片说明](screenshots/control.png)  
 
-## features(功能列表)  
+## Features(功能列表)  
 ### 测试相关功能
 - 产品管理：用于管理需要测试的项目、产品
 - 功能模块：设置各个项目中需要测试的功能及模块
