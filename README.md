@@ -1,20 +1,22 @@
-## 新石器自动化测试系统
- 新石器是一款功能强大、简单易用、0编程的自动化测试系统，并提供在开发、集成、部署、运行和维护过程中一整套专业的自动化测试解决方案。
+## Neolithic Automation Framework（新石器自动化测试系统）
+Neolithic  is an integrated testing framework powered by Selenium/WebDriver 、Appium、FlaUI.  It is a complete testing solution which support Web、Mobile(Android/IOS) and Desktop GUI Programs  
+### Supported   Browsers  
+Chrome、Firefox、Edge、Safari、IE  
+### Supported Mobile  
+Android、IOS  
+### Windows applications   
+Win32,、WinForms,、WPF、Store Apps ...  
+
+新石器是一款功能强大、简单易用、0编程的自动化测试系统，并提供在开发、集成、部署、运行和维护过程中一整套专业的自动化测试解决方案。
 它底层使用Selenium/WebDriver 、Appium、FlaUI等开源测试框架，可提供强大的 WebUI测试、手机（Android/IOS）测试和传统的桌面软件测试。
 ### 支持的浏览器  
 Chrome、Firefox、Edge、Safari、IE  
 ### 支持的手机 
 Android、IOS  
 ### 桌面软件 
-Win32, WinForms, WPF, Store Apps, ...  
+Win32,、WinForms,、WPF、Store Apps ...  
 
-Neolithic  is an integrated testing framework powered by Selenium/WebDriver 、Appium、FlaUI.  It is a complete testing solution which support Web、Mobile(Android/IOS) and Desktop GUI Programs  
-### Supported   Browsers  
-Chrome、Firefox、Edge、Safari、IE  
-### Supported Mobile  
-Android、IOS  
-### Desktop GUI  
-Win32, WinForms, WPF, Store Apps, ...  
+
 
 ## 在线体验
 - 地址：http://62.234.16.106/  
