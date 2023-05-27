@@ -1,4 +1,4 @@
-## Neolithic Automation Framework（新石器自动化测试系统）
+## Neolithic — Integrated Automation Testing Framework（新石器自动化测试系统）
 Neolithic  is an integrated testing framework powered by Selenium/WebDriver 、Appium、FlaUI.  It is a complete testing solution which support Web、Mobile(Android/IOS) and Desktop GUI Programs  
 ### Supported   Browsers  
 Chrome、Firefox、Edge、Safari、IE  
