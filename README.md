@@ -2,19 +2,19 @@
  新石器是一款功能强大、简单易用、0编程的自动化测试系统，并提供在开发、集成、部署、运行和维护过程中一整套专业的自动化测试解决方案。
 它底层使用Selenium/WebDriver 、Appium、FlaUI等开源测试框架，可提供强大的 WebUI测试、手机（Android/IOS）测试和传统的桌面软件测试。
 ### 支持的浏览器  
-Chrome/Firefox/Edge/Safari/IE  
+Chrome、Firefox、Edge、Safari、IE  
 ### 支持的手机 
-Android/IOS  
+Android、IOS  
 ### 桌面软件 
-Win32/WinForm/Wpf 
+Win32, WinForms, WPF, Store Apps, ...  
 
 Neolithic  is an integrated testing framework powered by Selenium/WebDriver 、Appium、FlaUI.  It is a complete testing solution which support Web、Mobile(Android/IOS) and Desktop GUI Programs  
 ### Supported   Browsers  
-Chrome/Firefox/Edge/Safari/IE  
+Chrome、Firefox、Edge、Safari、IE  
 ### Supported Mobile  
-Android/IOS  
+Android、IOS  
 ### Desktop GUI  
-Win32/WinForm/Wpf 
+Win32, WinForms, WPF, Store Apps, ...  
 
 ## 在线体验
 - 地址：http://62.234.16.106/  
@@ -68,6 +68,9 @@ Win32/WinForm/Wpf
 - 打包&安装：自动生成安装所需要的脚本，然后在部署的时候可直接安装
 
 ## 链接
+[Selenium](https://github.com/SeleniumHQ/selenium)  
+[Appium](https://github.com/appium/appium)  
+[FlaUI](https://github.com/FlaUI/FlaUI)  
 [YiShaAdmin](https://github.com/liukuo362573/YiShaAdmin)
 
 
