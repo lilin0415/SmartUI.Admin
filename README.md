@@ -1,7 +1,20 @@
 ## 新石器自动化测试系统
  新石器是一款功能强大、简单易用、0编程的自动化测试系统，并提供在开发、集成、部署、运行和维护过程中一整套专业的自动化测试解决方案。
-它借鉴了市场上主流的自动化软件的优点，采用设计器、执行器和控制器“三合一”的架构模式。提供包括脚本录制、开发、编写、调试；测试用例与测试计划的制定、执行；用例运行结果及日志的汇总、分析，自动生成各种维度的测试报告等功能。
-帮助企业解决日常测试管理过程中遇到的资产管理、测试效率、测试质量的问题，降低企业研发成本，提高产品质量，助力企业实现数字化、智能化升级转型。  
+它底层使用Selenium/WebDriver 、Appium、FlaUI等开源测试框架，可提供强大的 WebUI测试、手机（Android/IOS）测试和传统的桌面软件测试。
+### 支持的浏览器  
+Chrome/Firefox/Edge/Safari/IE  
+### 支持的手机 
+Android/IOS  
+### 桌面软件 
+Win32/WinForm/Wpf 
+
+Neolithic  is an integrated testing framework powered by Selenium/WebDriver 、Appium、FlaUI.  It is a complete testing solution which support Web、Mobile(Android/IOS) and Desktop GUI Programs  
+### Supported   Browsers  
+Chrome/Firefox/Edge/Safari/IE  
+### Supported Mobile  
+Android/IOS  
+### Desktop GUI  
+Win32/WinForm/Wpf 
 
 ## 在线体验
 - 地址：http://62.234.16.106/  
@@ -55,7 +68,8 @@
 - 打包&安装：自动生成安装所需要的脚本，然后在部署的时候可直接安装
 
 ## 链接
-此系统基于[YiShaAdmin](https://github.com/liukuo362573/YiShaAdmin)实现，除了修复众多的bug之后，还增加了很多额外的功能，如打包、安装；角色分类；api接口及用户token等等。另外也很感谢YiShaAdmin的作者对开源做出的贡献。
+[YiShaAdmin](https://github.com/liukuo362573/YiShaAdmin)
+
 
 ## License
 [MIT](https://github.com/lilin0415/SmartUI.Admin/blob/master/LICENSE)  
